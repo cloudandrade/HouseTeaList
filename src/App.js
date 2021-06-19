@@ -1,25 +1,29 @@
-import logo from './logo.svg';
 import './App.css';
+import Foto from '../src/img/img1.jpg';
+import { Typography } from '@material-ui/core';
+import Lista from './components/Accordion';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<div className="App">
+			<div className="box1">
+				<Typography variant="subtitle2" component="h2">
+					Nosso Chá de casa nova!
+				</Typography>
+			</div>
+			<div className="box1">
+				<div className="child1">
+					<img src={Foto} className="img" />
+				</div>
+			</div>
+			<div className="box1">
+				<Typography variant="subtitle2" component="h2">
+					Lista de Kaire e Jan
+				</Typography>
+			</div>
+			<Lista />
+		</div>
+	);
 }
 
 export default App;
