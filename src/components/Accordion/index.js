@@ -62,30 +62,19 @@ export default function SimpleAccordion() {
 	}, []);
 
 	const [lista, setLista] = useState([]);
-	const [state, setState] = React.useState({
-		c1: true,
-		c2: false,
-		c3: false,
-		c4: false,
-		c5: false,
-		c6: false,
-		c7: false,
-		c8: false,
-		c9: false,
-		c10: false,
-		c11: false,
-		c12: false,
-		c13: false,
-		c14: false,
-		c15: false,
-		c16: false,
-		c17: false,
-		c18: false,
-	});
+	const [nome, setNome] = useState('');
 
-	const handleChange = (event) => {
-		setState({ ...state, [event.target.name]: event.target.checked });
-	};
+	function handleAssinar(item) {
+		let listaAtualizada = lista.map(function (i, index) {
+			if (i.id === item.id) {
+				i.nome = nome;
+				i.checked = true;
+			}
+			return i;
+		});
+
+		setLista(listaAtualizada);
+	}
 
 	return (
 		<div className={classes.root}>
@@ -99,43 +88,57 @@ export default function SimpleAccordion() {
 								id="panel1a-header"
 							>
 								<FormControlLabel
-									control={
-										<GreenCheckbox
-											checked={item.checked}
-											onChange={handleChange}
-											name="checkedG"
-										/>
-									}
+									control={<GreenCheckbox checked={item.checked} />}
 								/>
 								<Typography style={{ marginTop: '5px', fontSize: 20 }}>
 									{item.item}
 								</Typography>
 							</AccordionSummary>
 							<AccordionDetails>
-								<Typography>
-									<form noValidate autoComplete="off">
-										<CssTextField
-											className={classes.margin}
-											className="text"
-											label="Seu Nome"
-											variant="outlined"
-											size="small"
-											style={{}}
-										/>
+								{/**Aqui é validado se o check é true ou não */
+								/** se o
+								check for false exibirá o campo para preencher o nome e
+								botao */
+								/** se o check for true exibira o nome de quem
+								assinou */}
+								{item.checked === false ? (
+									<Typography>
+										<form noValidate autoComplete="off">
+											<CssTextField
+												className={classes.margin}
+												className="text"
+												label="Seu Nome"
+												variant="outlined"
+												size="small"
+												onChange={(e) => {
+													setNome(e.target.value);
+												}}
+											/>
 
-										<Button
-											variant="contained"
-											className="button"
-											style={{
-												marginLeft: '10px',
-												marginTop: '4px',
-												backgroundColor: '#c38a9e',
-											}}
-										>
-											Assinar
-										</Button>
-									</form>
-								</Typography>
+											<Button
+												variant="contained"
+												className="button"
+												style={{
+													marginLeft: '10px',
+													marginTop: '4px',
+													backgroundColor: '#c38a9e',
+												}}
+												onClick={(e) => handleAssinar(item)}
+											>
+												Assinar
+											</Button>
+										</form>
+									</Typography>
+								) : (
+									<div>
+										<Typography style={{ fontSize: 16 }}>
+											Assinado por:
+										</Typography>
+										<Typography style={{ fontSize: 16 }}>
+											{item.nome}
+										</Typography>
+									</div>
+								)}
 							</AccordionDetails>
 						</Accordion>
 					</div>
