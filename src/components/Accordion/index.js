@@ -11,9 +11,9 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import './styles.css';
-import ListaJson from '../Lista/ListaChaCasaNova.json';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { getAll, updateItem } from '../../service/requestService';
 
 //>>>>>>>>>>>>>>checkbox
 const GreenCheckbox = withStyles({
@@ -57,23 +57,32 @@ const useStyles = makeStyles((theme) => ({
 export default function SimpleAccordion() {
 	const classes = useStyles();
 
-	useEffect(() => {
-		setLista(ListaJson);
-	}, []);
-
 	const [lista, setLista] = useState([]);
 	const [nome, setNome] = useState('');
 
-	function handleAssinar(item) {
-		let listaAtualizada = lista.map(function (i, index) {
-			if (i.id === item.id) {
-				i.nome = nome;
-				i.checked = true;
-			}
-			return i;
-		});
+	useEffect(() => {
+		fetchData();
+	}, []);
 
-		setLista(listaAtualizada);
+	function fetchData() {
+		getAll()
+			.then((response) => {
+				setLista(response.data);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	}
+
+	function handleAssinar(item) {
+		updateItem(item)
+			.then((response) => {
+				console.log(response);
+				fetchData();
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	}
 
 	return (
