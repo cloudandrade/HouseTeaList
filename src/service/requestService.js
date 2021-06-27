@@ -12,8 +12,15 @@ export function getAll() {
 	return api.get('itens');
 }
 
-export function updateItem(body) {
-	return api.put(`itens/${body.id}`, { body });
+export function updateItem(obj) {
+	const id = obj._id;
+	const body = {
+		id: obj.id,
+		nome: obj.nome,
+		checked: obj.checked,
+	};
+
+	return api.put(`itens/${id}`, body);
 }
 
 /* import API from './axiosAPI';

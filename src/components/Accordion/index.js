@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
 	Typography,
 	Accordion,
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleAccordion() {
 	const classes = useStyles();
-
+	const componentRef = React.useRef();
 	const [lista, setLista] = useState([]);
 	const [nome, setNome] = useState('');
 
@@ -75,14 +75,18 @@ export default function SimpleAccordion() {
 	}
 
 	function handleAssinar(item) {
-		updateItem(item)
+		item.nome = nome;
+		item.checked = true;
+		console.log(item);
+		console.log(componentRef.current);
+		/* updateItem(item)
 			.then((response) => {
 				console.log(response);
 				fetchData();
 			})
 			.catch((error) => {
 				console.error(error);
-			});
+			}); */
 	}
 
 	return (
@@ -112,15 +116,20 @@ export default function SimpleAccordion() {
 								assinou */}
 								{item.checked === false ? (
 									<Typography>
-										<form noValidate autoComplete="off">
+										<form>
 											<CssTextField
+												ref={(node) =>
+													(componentRef.current = node)
+												}
 												className={classes.margin}
 												className="text"
 												label="Seu Nome"
 												variant="outlined"
 												size="small"
 												onChange={(e) => {
-													setNome(e.target.value);
+													e.target.value.length > 4
+														? setNome(e.target.value)
+														: setNome('');
 												}}
 											/>
 
