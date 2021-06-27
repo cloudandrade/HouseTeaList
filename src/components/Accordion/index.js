@@ -78,15 +78,15 @@ export default function SimpleAccordion() {
 		item.nome = nome;
 		item.checked = true;
 		console.log(item);
-		console.log(componentRef.current);
-		/* updateItem(item)
+		/* console.log(componentRef.current); */
+		updateItem(item)
 			.then((response) => {
 				console.log(response);
 				fetchData();
 			})
 			.catch((error) => {
 				console.error(error);
-			}); */
+			});
 	}
 
 	return (
