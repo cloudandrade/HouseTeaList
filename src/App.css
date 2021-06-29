@@ -26,4 +26,14 @@ body {
 	object-position: 20% 90%;
 	border-radius: 50%;
 	border: 5px solid#c38a9e;
+	/* 	border: 5px solid black; */
+}
+
+.box3 {
+	margin: 15px;
+	border-radius: 10px;
+	border: 2px solid#c38a9e;
+	display: block;
+	background-color: #ffffff;
+	opacity: 0.8;
 }

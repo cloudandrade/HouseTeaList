@@ -14,3 +14,8 @@
 	width: 70px;
 	height: 30px;
 }
+
+.assinado-div {
+	margin-top: 5px;
+	display: flex;
+}

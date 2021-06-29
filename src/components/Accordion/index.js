@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleAccordion() {
 	const classes = useStyles();
-	const componentRef = React.useRef();
+	const textRef = React.useRef();
 	const [lista, setLista] = useState([]);
 	const [nome, setNome] = useState('');
 
@@ -77,8 +77,7 @@ export default function SimpleAccordion() {
 	function handleAssinar(item) {
 		item.nome = nome;
 		item.checked = true;
-		console.log(item);
-		/* console.log(componentRef.current); */
+
 		updateItem(item)
 			.then((response) => {
 				console.log(response);
@@ -107,7 +106,13 @@ export default function SimpleAccordion() {
 									{item.item}
 								</Typography>
 							</AccordionSummary>
-							<AccordionDetails>
+							<AccordionDetails
+								style={
+									item.checked === false
+										? { backgroundColor: '#ffffff' }
+										: { backgroundColor: '#c38a9e' }
+								}
+							>
 								{/**Aqui é validado se o check é true ou não */
 								/** se o
 								check for false exibirá o campo para preencher o nome e
@@ -118,19 +123,12 @@ export default function SimpleAccordion() {
 									<Typography>
 										<form>
 											<CssTextField
-												ref={(node) =>
-													(componentRef.current = node)
-												}
 												className={classes.margin}
 												className="text"
 												label="Seu Nome"
 												variant="outlined"
 												size="small"
-												onChange={(e) => {
-													e.target.value.length > 4
-														? setNome(e.target.value)
-														: setNome('');
-												}}
+												onBlur={(e) => setNome(e.target.value)}
 											/>
 
 											<Button
@@ -148,11 +146,19 @@ export default function SimpleAccordion() {
 										</form>
 									</Typography>
 								) : (
-									<div>
-										<Typography style={{ fontSize: 16 }}>
+									<div className="assinado-div">
+										<Typography
+											style={{
+												fontSize: 16,
+												fontWeight: 'bold',
+												marginLeft: '10px',
+											}}
+										>
 											Assinado por:
 										</Typography>
-										<Typography style={{ fontSize: 16 }}>
+										<Typography
+											style={{ fontSize: 16, marginLeft: '5px' }}
+										>
 											{item.nome}
 										</Typography>
 									</div>
