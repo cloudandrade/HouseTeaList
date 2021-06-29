@@ -59,6 +59,19 @@ function App() {
 					lembrança e comemoraremos individualmente com o(a) amigo(a) que nos
 					presentear durante essa entrega.
 				</Typography>
+				<Typography
+					style={{
+						margin: '12px',
+						marginTop: -10,
+						fontFamily: 'Roboto',
+						fontSize: '12px',
+						fontWeight: '600',
+					}}
+				>
+					Caso queiram enviar direto ao endereço: Travessa Teodoro Sampaio, Nº
+					37, Vale das Pedrinhas, Salvador - BA, 41925-790. Não esqueca de nos
+					comunicar ao comprar!
+				</Typography>
 			</div>
 			<Lista />
 		</div>
