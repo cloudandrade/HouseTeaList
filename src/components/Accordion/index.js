@@ -90,17 +90,21 @@ export default function SimpleAccordion() {
 	}
 
 	function handleAssinar(item) {
-		item.nome = nome;
-		item.checked = true;
+		if (nome.length > 2) {
+			item.nome = nome;
+			item.checked = true;
 
-		updateItem(item)
-			.then((response) => {
-				console.log(response);
-				fetchData();
-			})
-			.catch((error) => {
-				console.error(error);
-			});
+			updateItem(item)
+				.then((response) => {
+					console.log(response);
+					fetchData();
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+		} else {
+			alert('É necessário digitar um nome antes de assinar!');
+		}
 	}
 
 	return (
