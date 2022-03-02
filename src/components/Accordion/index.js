@@ -1,20 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
 import {
-  Typography,
   Accordion,
-  AccordionSummary,
   AccordionDetails,
-  makeStyles,
-  withStyles,
-  TextField,
+  AccordionSummary,
   Button,
   CircularProgress,
+  makeStyles,
+  TextField,
+  Typography,
+  withStyles,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import './styles.css';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import React, { useEffect, useState } from 'react';
+
 import { getAll, updateItem } from '../../service/requestService';
+
+import './styles.css';
 
 //>>>>>>>>>>>>>>checkbox
 const GreenCheckbox = withStyles({
@@ -28,14 +30,7 @@ const GreenCheckbox = withStyles({
 })((props) => <Checkbox color="default" {...props} />);
 //<<<<<<<<<<<<<<checkbox
 //>>>>>>>>>>>>>>loading
-const loadStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    '& > * + *': {
-      marginLeft: theme.spacing(2),
-    },
-  },
-}));
+
 //<<<<<<<<<<<<<<loading
 
 //>>>>>>>>>>>>>textfield
@@ -68,8 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleAccordion() {
   const classes = useStyles();
-  const loadclasses = loadStyles();
-  const textRef = React.useRef();
+
   const [lista, setLista] = useState([]);
   const [nome, setNome] = useState('');
 
@@ -156,7 +150,6 @@ export default function SimpleAccordion() {
                       <form>
                         <CssTextField
                           className={classes.margin}
-                          className="text"
                           label="Seu Nome"
                           variant="outlined"
                           size="small"
