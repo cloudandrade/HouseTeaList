@@ -1,11 +1,15 @@
 import React from 'react';
 
+import Header from './components/Header';
+import MyLists from './components/MyLists';
+
 // import { Container } from './styles';
 
 function home() {
   return (
     <>
-      <h1>HOME</h1>
+      <Header />
+      <MyLists />
     </>
   );
 }

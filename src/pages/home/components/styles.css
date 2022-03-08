@@ -1,0 +1,83 @@
+.header-container {
+  width: 100%;
+  height: 75px;
+  background-color: #ffd700;
+  display: flex;
+  justify-content: center;
+  z-index: -1;
+  border-bottom: 1px solid gray;
+}
+
+.header-text {
+  font-weight: 500;
+  font-size: 16px;
+  margin-top: 25px;
+}
+
+.header-button {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  margin: 15px;
+  right: 1px;
+  width: 45px;
+  height: 45px;
+}
+
+.header-button:hover {
+  background-color: #d50000;
+  color: #fff;
+  border-radius: 2px;
+  border: 1px solid black;
+}
+
+.header-brand-group {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  left: 15px;
+}
+
+.header-brand {
+  margin-top: 22px;
+  font-family: Roboto;
+  font-size: 32px;
+  font-weight: 700;
+  color: green;
+}
+
+.header-logo {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-img-brand1 {
+  margin-left: 15px;
+  margin-top: 5px;
+  width: 30px;
+  height: 30px;
+  z-index: 0;
+}
+
+.header-img-brand2 {
+  width: 40px;
+  height: 40px;
+  margin-top: -12px;
+  margin-left: 10px;
+  z-index: 1;
+}
+
+.mylists-title {
+  font-weight: 800;
+  font-size: 28px;
+  margin-top: 20px;
+  margin-left: 40px;
+}
+
+.mylists-container {
+  display: flex;
+  background-color: #fffdd0;
+  width: 100%;
+  min-height: 88vh;
+}
