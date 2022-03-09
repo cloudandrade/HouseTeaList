@@ -9,7 +9,7 @@
 }
 
 .header-text {
-  font-weight: 500;
+  font-weight: 400;
   font-size: 16px;
   margin-top: 25px;
 }
@@ -73,11 +73,24 @@
   font-size: 28px;
   margin-top: 20px;
   margin-left: 40px;
+  width: 100%;
 }
 
 .mylists-container {
-  display: flex;
   background-color: #fffdd0;
   width: 100%;
   min-height: 88vh;
+}
+
+.mylists-listarea {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ffd700;
+  padding: 2%;
+  width: 90%;
+  margin: 2%;
+  border-radius: 15px;
+  box-shadow: 5px 5px 20px grey;
 }

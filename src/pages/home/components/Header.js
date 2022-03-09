@@ -6,7 +6,7 @@ import './styles.css';
 import PowerOffIcon from '@mui/icons-material/PowerSettingsNew';
 // import { Container } from './styles';
 
-function Header() {
+function Header({ nomeUsuario }) {
   return (
     <>
       {/* NAVBAR */}
@@ -24,7 +24,7 @@ function Header() {
         </div>
 
         <div className="header-text">
-          Olá, @user, seja bem vindo(a)
+          Olá <strong>{nomeUsuario}</strong>, seja bem vindo(a)
         </div>
 
         <button className="header-button">

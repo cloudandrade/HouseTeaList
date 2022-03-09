@@ -1,0 +1,58 @@
+exports.userInfo = {
+  id: 1,
+  nome: 'João Cláudio',
+  usuario: 'aspenstevens',
+  senha: '123456',
+  tokenAcesso:
+    'asdglkjnbasdg54sadg.84sadgf654sdg654asdg684sdg984sadg564sd435x5s7e5r7se453#',
+  listas: [
+    {
+      id: 1,
+      nomeLista: 'Chá de casa nova de Jan e Kaire',
+      tipoLista: 'Chá de casa nova',
+      qtdItensTotal: 0,
+      qtdItensAssinados: 0,
+      itens: [],
+      config: {
+        imagem: '',
+        color1: '',
+        color2: '',
+        color3: '',
+        titulo: '',
+        mensagem: '',
+      },
+    },
+    {
+      id: 2,
+      nomeLista: 'Chá de fralda de Henry',
+      tipoLista: 'Chá de fralda',
+      qtdItensTotal: 0,
+      qtdItensAssinados: 0,
+      itens: [],
+      config: {
+        imagem: '',
+        color1: '',
+        color2: '',
+        color3: '',
+        titulo: '',
+        mensagem: '',
+      },
+    },
+    {
+      id: 3,
+      nomeLista: 'Chá Missionário de Ryan',
+      tipoLista: 'Chá Missionário',
+      qtdItensTotal: 0,
+      qtdItensAssinados: 0,
+      itens: [],
+      config: {
+        imagem: '',
+        color1: '',
+        color2: '',
+        color3: '',
+        titulo: '',
+        mensagem: '',
+      },
+    },
+  ],
+};
