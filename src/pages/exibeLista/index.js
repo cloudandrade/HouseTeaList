@@ -1,9 +1,10 @@
-import Foto from '../src/img/img1.jpg';
-import Lista from './components/Accordion';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import React from 'react';
 
-import 'styles.scss';
+import Foto from '../../../src/img/img1.jpg';
+import Lista from '../../components/Accordion';
+
+import './styles.css';
 
 function exibeLista() {
   return (

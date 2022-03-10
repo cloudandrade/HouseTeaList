@@ -3,7 +3,7 @@ exports.userInfo = {
   nome: 'João Cláudio',
   usuario: 'aspenstevens',
   senha: '123456',
-  tokenAcesso: null,
+  tokenAcesso: 'asadg19as5dg132sad1g651sad6g51',
   listas: [
     {
       id: 1,
