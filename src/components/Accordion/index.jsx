@@ -5,7 +5,6 @@ import {
 	AccordionSummary,
 	AccordionDetails,
 	makeStyles,
-	withStyles,
 	TextField,
 	Button,
 	CircularProgress,
@@ -15,27 +14,24 @@ import './styles.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { getAll, updateItem } from '../../service/requestService';
-import { APP_CONTENT } from '../../config/appContent';
-import { APP_THEME } from '../../config/theme';
+import { useAppContent } from '../../context/AppContentContext';
 
-// Cores do checkbox vêm de overrides em src/config/muiTheme.js (colorPrimary)
-//>>>>>>>>>>>>>textfield
-const CssTextField = withStyles({
+const useTextFieldStyles = makeStyles((theme) => ({
 	root: {
 		'& label.Mui-focused': {
-			color: APP_THEME.primary,
+			color: theme.palette.primary.main,
 		},
 		'& .MuiInput-underline:after': {
-			borderBottomColor: APP_THEME.primary,
+			borderBottomColor: theme.palette.primary.main,
 		},
 		'& .MuiOutlinedInput-root': {
 			'&.Mui-focused fieldset': {
-				borderColor: APP_THEME.primary,
+				borderColor: theme.palette.primary.main,
 			},
 		},
 	},
-})(TextField);
-//<<<<<<<<<<<<<textfield
+}));
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		opacity: 0.9,
@@ -49,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleAccordion() {
 	const classes = useStyles();
+	const textFieldClasses = useTextFieldStyles();
+	const { content } = useAppContent();
+	const { theme } = content;
 	const [lista, setLista] = useState([]);
 	const [nome, setNome] = useState('');
 
@@ -82,7 +81,7 @@ export default function SimpleAccordion() {
 					console.error(error);
 				});
 		} else {
-			alert(APP_CONTENT.accordion.nameRequiredAlert);
+			alert(content.accordion.nameRequiredAlert);
 		}
 	}
 
@@ -96,10 +95,10 @@ export default function SimpleAccordion() {
 						justifyContent: 'center',
 					}}
 				>
-					<CircularProgress style={{ color: APP_THEME.primary }} />
+					<CircularProgress style={{ color: theme.primary }} />
 				</div>
 			) : (
-				lista.map(function (item, index) {
+				lista.map(function (item) {
 					return (
 						<div key={item._id || item.id}>
 							<Accordion className="accordion">
@@ -120,7 +119,7 @@ export default function SimpleAccordion() {
 										style={{
 											marginTop: '5px',
 											fontSize: 20,
-											color: APP_THEME.text,
+											color: theme.text,
 										}}
 									>
 										{item.item}
@@ -129,25 +128,20 @@ export default function SimpleAccordion() {
 								<AccordionDetails
 									style={
 										item.checked === false
-											? { backgroundColor: APP_THEME.surface }
+											? { backgroundColor: theme.surface }
 											: {
-													backgroundColor: APP_THEME.primary,
-													color: APP_THEME.textOnPrimary,
+													backgroundColor: theme.primary,
+													color: theme.textOnPrimary,
 												}
 									}
 								>
-									{/**Aqui é validado se o check é true ou não */
-									/** se o
-									check for false exibirá o campo para preencher o nome e
-									botao */
-									/** se o check for true exibira o nome de quem
-									assinou */}
 									{item.checked === false ? (
 										<Typography>
 											<form>
-												<CssTextField
+												<TextField
 													className="text"
-													label={APP_CONTENT.accordion.nameFieldLabel}
+													classes={{ root: textFieldClasses.root }}
+													label={content.accordion.nameFieldLabel}
 													variant="outlined"
 													size="small"
 													onBlur={(e) =>
@@ -163,9 +157,9 @@ export default function SimpleAccordion() {
 														marginLeft: '10px',
 														marginTop: '4px',
 													}}
-													onClick={(e) => handleAssinar(item)}
+													onClick={() => handleAssinar(item)}
 												>
-													{APP_CONTENT.accordion.signButton}
+													{content.accordion.signButton}
 												</Button>
 											</form>
 										</Typography>
@@ -176,16 +170,16 @@ export default function SimpleAccordion() {
 													fontSize: 16,
 													fontWeight: 'bold',
 													marginLeft: '10px',
-													color: APP_THEME.textOnPrimary,
+													color: theme.textOnPrimary,
 												}}
 											>
-												{APP_CONTENT.accordion.signedByPrefix}
+												{content.accordion.signedByPrefix}
 											</Typography>
 											<Typography
 												style={{
 													fontSize: 16,
 													marginLeft: '5px',
-													color: APP_THEME.textOnPrimary,
+													color: theme.textOnPrimary,
 												}}
 											>
 												{item.nome}

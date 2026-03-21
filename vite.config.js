@@ -34,10 +34,26 @@ function openChromePlugin() {
 	};
 }
 
+/** Em dev/preview, pedidos a `/api/*` vão para o Express (porta 5000). Evita “Cannot POST …” quando o browser fala com o Vite em vez da API. */
+const apiProxy = {
+	'/api': {
+		target: 'http://127.0.0.1:5000',
+		changeOrigin: true,
+		rewrite: (path) => {
+			const next = path.replace(/^\/api/, '');
+			return next.startsWith('/') ? next : `/${next}`;
+		},
+	},
+};
+
 export default defineConfig({
 	plugins: [react(), openChromePlugin()],
 	server: {
 		port: 3000,
 		open: false,
+		proxy: apiProxy,
+	},
+	preview: {
+		proxy: apiProxy,
 	},
 });

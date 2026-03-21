@@ -361,3 +361,8 @@ export function getThemePaletteForVariation(raw) {
  * @type {Record<number, ThemePalette>}
  */
 export const THEME_PALETTES_BY_ID = BY_ID;
+
+/** Rótulo para selects (ex.: `3 — Rosa chá`). */
+export function getThemeSelectOptionLabel(p) {
+	return `${p.id} — ${p.name}`;
+}

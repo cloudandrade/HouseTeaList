@@ -9,6 +9,8 @@ VITE_THEME_VARIATION=1
 
 Usa um número inteiro de **1** a **30**. Valores inválidos ou ausentes usam o tema **1** (Azul clássico).
 
+O mesmo conjunto de paletas pode ser escolhido no painel **`/config`** (guardado em MongoDB); esse valor sobrepõe-se ao `VITE_THEME_VARIATION` do `.env` na página pública.
+
 ---
 
 ## Resumo rápido
