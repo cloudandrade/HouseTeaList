@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Typography,
 	Accordion,
@@ -16,41 +16,21 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { getAll, updateItem } from '../../service/requestService';
 import { APP_CONTENT } from '../../config/appContent';
+import { APP_THEME } from '../../config/theme';
 
-//>>>>>>>>>>>>>>checkbox
-const GreenCheckbox = withStyles({
-	root: {
-		color: '#f8bbd0',
-		'&$checked': {
-			color: '#c38a9e',
-		},
-	},
-	checked: {},
-})((props) => <Checkbox color="default" {...props} />);
-//<<<<<<<<<<<<<<checkbox
-//>>>>>>>>>>>>>>loading
-const loadStyles = makeStyles((theme) => ({
-	root: {
-		display: 'flex',
-		'& > * + *': {
-			marginLeft: theme.spacing(2),
-		},
-	},
-}));
-//<<<<<<<<<<<<<<loading
-
+// Cores do checkbox vêm de overrides em src/config/muiTheme.js (colorPrimary)
 //>>>>>>>>>>>>>textfield
 const CssTextField = withStyles({
 	root: {
 		'& label.Mui-focused': {
-			color: '#c38a9e',
+			color: APP_THEME.primary,
 		},
 		'& .MuiInput-underline:after': {
-			borderBottomColor: '#c38a9e',
+			borderBottomColor: APP_THEME.primary,
 		},
 		'& .MuiOutlinedInput-root': {
 			'&.Mui-focused fieldset': {
-				borderColor: '#c38a9e',
+				borderColor: APP_THEME.primary,
 			},
 		},
 	},
@@ -69,8 +49,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleAccordion() {
 	const classes = useStyles();
-	const loadclasses = loadStyles();
-	const textRef = React.useRef();
 	const [lista, setLista] = useState([]);
 	const [nome, setNome] = useState('');
 
@@ -118,7 +96,7 @@ export default function SimpleAccordion() {
 						justifyContent: 'center',
 					}}
 				>
-					<CircularProgress style={{ color: '#c38a9e' }} />
+					<CircularProgress style={{ color: APP_THEME.primary }} />
 				</div>
 			) : (
 				lista.map(function (item, index) {
@@ -131,10 +109,19 @@ export default function SimpleAccordion() {
 									id="panel1a-header"
 								>
 									<FormControlLabel
-										control={<GreenCheckbox checked={item.checked} />}
+										control={
+											<Checkbox
+												color="primary"
+												checked={item.checked}
+											/>
+										}
 									/>
 									<Typography
-										style={{ marginTop: '5px', fontSize: 20 }}
+										style={{
+											marginTop: '5px',
+											fontSize: 20,
+											color: APP_THEME.text,
+										}}
 									>
 										{item.item}
 									</Typography>
@@ -142,8 +129,11 @@ export default function SimpleAccordion() {
 								<AccordionDetails
 									style={
 										item.checked === false
-											? { backgroundColor: '#ffffff' }
-											: { backgroundColor: '#c38a9e' }
+											? { backgroundColor: APP_THEME.surface }
+											: {
+													backgroundColor: APP_THEME.primary,
+													color: APP_THEME.textOnPrimary,
+												}
 									}
 								>
 									{/**Aqui é validado se o check é true ou não */
@@ -167,11 +157,11 @@ export default function SimpleAccordion() {
 
 												<Button
 													variant="contained"
+													color="primary"
 													className="button"
 													style={{
 														marginLeft: '10px',
 														marginTop: '4px',
-														backgroundColor: '#c38a9e',
 													}}
 													onClick={(e) => handleAssinar(item)}
 												>
@@ -186,6 +176,7 @@ export default function SimpleAccordion() {
 													fontSize: 16,
 													fontWeight: 'bold',
 													marginLeft: '10px',
+													color: APP_THEME.textOnPrimary,
 												}}
 											>
 												{APP_CONTENT.accordion.signedByPrefix}
@@ -194,6 +185,7 @@ export default function SimpleAccordion() {
 												style={{
 													fontSize: 16,
 													marginLeft: '5px',
+													color: APP_THEME.textOnPrimary,
 												}}
 											>
 												{item.nome}

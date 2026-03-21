@@ -1,10 +1,10 @@
 body {
 	background-size: 50px 50px;
 	background-image: conic-gradient(
-		#f8bbd0 90deg,
-		#ffffff 90deg 180deg,
-		#f8bbd0 180deg 270deg,
-		#ffffff 270deg
+		var(--color-background-a) 90deg,
+		var(--color-background-b) 90deg 180deg,
+		var(--color-background-a) 180deg 270deg,
+		var(--color-background-b) 270deg
 	);
 }
 
@@ -25,15 +25,15 @@ body {
 	object-fit: cover;
 	object-position: 20% 90%;
 	border-radius: 50%;
-	border: 5px solid#c38a9e;
+	border: 5px solid var(--color-primary);
 	/* 	border: 5px solid black; */
 }
 
 .box3 {
 	margin: 15px;
 	border-radius: 10px;
-	border: 2px solid#c38a9e;
+	border: 2px solid var(--color-primary);
 	display: block;
-	background-color: #ffffff;
+	background-color: var(--color-surface);
 	opacity: 0.8;
 }

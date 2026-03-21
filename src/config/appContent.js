@@ -1,9 +1,11 @@
 import heroImage from '../img/img1.jpg';
 import listaInicialItens from '../../data/listaInicial.json';
+import { APP_THEME } from './theme';
 
 /**
  * Único ponto de configuração de textos e mídia da página.
  * Ajuste aqui títulos, nomes, parágrafos, imagem principal e lista inicial (referência/seed).
+ * Cores: ver `APP_THEME` e variáveis `VITE_COLOR_*` no `.env` (ver `.env.example`).
  */
 export const APP_CONTENT = {
 	documentTitle: 'Lista de Chá',
@@ -39,4 +41,9 @@ export const APP_CONTENT = {
 		signedByPrefix: 'Assinado por:',
 		nameRequiredAlert: 'É necessário digitar um nome antes de assinar!',
 	},
+
+	/** Paleta (hex ou rgb) — preferir editar via `.env` */
+	theme: APP_THEME,
 };
+
+export { APP_THEME };
