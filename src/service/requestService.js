@@ -1,7 +1,7 @@
 import axios from 'axios';
-const APIPORT = '5000';
-//const URLAPI = `http://localhost:${APIPORT}`;
-const URLAPI = `https://tealistserver.herokuapp.com`;
+
+const URLAPI =
+	import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const api = axios.create({
 	baseURL: URLAPI,

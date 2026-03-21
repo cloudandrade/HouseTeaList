@@ -15,6 +15,7 @@ import './styles.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { getAll, updateItem } from '../../service/requestService';
+import { APP_CONTENT } from '../../config/appContent';
 
 //>>>>>>>>>>>>>>checkbox
 const GreenCheckbox = withStyles({
@@ -103,7 +104,7 @@ export default function SimpleAccordion() {
 					console.error(error);
 				});
 		} else {
-			alert('É necessário digitar um nome antes de assinar!');
+			alert(APP_CONTENT.accordion.nameRequiredAlert);
 		}
 	}
 
@@ -122,8 +123,8 @@ export default function SimpleAccordion() {
 			) : (
 				lista.map(function (item, index) {
 					return (
-						<div>
-							<Accordion className="accordion" key={item.id}>
+						<div key={item._id || item.id}>
+							<Accordion className="accordion">
 								<AccordionSummary
 									expandIcon={<ExpandMoreIcon />}
 									aria-controls="panel1a-content"
@@ -155,9 +156,8 @@ export default function SimpleAccordion() {
 										<Typography>
 											<form>
 												<CssTextField
-													className={classes.margin}
 													className="text"
-													label="Seu Nome"
+													label={APP_CONTENT.accordion.nameFieldLabel}
 													variant="outlined"
 													size="small"
 													onBlur={(e) =>
@@ -175,7 +175,7 @@ export default function SimpleAccordion() {
 													}}
 													onClick={(e) => handleAssinar(item)}
 												>
-													Assinar
+													{APP_CONTENT.accordion.signButton}
 												</Button>
 											</form>
 										</Typography>
@@ -188,7 +188,7 @@ export default function SimpleAccordion() {
 													marginLeft: '10px',
 												}}
 											>
-												Assinado por:
+												{APP_CONTENT.accordion.signedByPrefix}
 											</Typography>
 											<Typography
 												style={{

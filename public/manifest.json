@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Lista de presentes",
+  "name": "Lista de presentes",
   "icons": [
     {
       "src": "favicon.ico",

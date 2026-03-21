@@ -1,9 +1,14 @@
 import './App.css';
-import Foto from '../src/img/img1.jpg';
+import { useEffect } from 'react';
 import { Typography } from '@material-ui/core';
 import Lista from './components/Accordion';
+import { APP_CONTENT } from './config/appContent';
 
 function App() {
+	useEffect(() => {
+		document.title = APP_CONTENT.documentTitle;
+	}, []);
+
 	return (
 		<div className="App">
 			<div className="box1">
@@ -14,12 +19,12 @@ function App() {
 						fontWeight: 'bold',
 					}}
 				>
-					Nosso Chá de casa nova!
+					{APP_CONTENT.heroTitle}
 				</Typography>
 			</div>
 			<div className="box1">
 				<div className="child1">
-					<img src={Foto} className="img" />
+					<img src={APP_CONTENT.heroImage} className="img" alt="" />
 				</div>
 			</div>
 			<div className="box1">
@@ -30,7 +35,7 @@ function App() {
 						fontWeight: 'bold',
 					}}
 				>
-					Lista de Jan & Kaire
+					{APP_CONTENT.listSubtitle}
 				</Typography>
 			</div>
 
@@ -43,9 +48,7 @@ function App() {
 						fontWeight: '600',
 					}}
 				>
-					Gostaríamos de humildemente pedir um apoio, vamos nos casar em
-					Dezembro e iremos nos mudar para uma casa nova! Faça parte da nossa
-					história, deixe sua contribuição e lembraremos sempre de você!
+					{APP_CONTENT.introPrimary}
 				</Typography>
 				<Typography
 					style={{
@@ -55,9 +58,7 @@ function App() {
 						fontWeight: '600',
 					}}
 				>
-					Obs: Respeitando o isolamento, os que assinarem receberão em mãos uma
-					lembrança e comemoraremos individualmente com o(a) amigo(a) que nos
-					presentear durante essa entrega.
+					{APP_CONTENT.introNote}
 				</Typography>
 				<Typography
 					style={{
@@ -68,9 +69,7 @@ function App() {
 						fontWeight: '600',
 					}}
 				>
-					Caso queiram enviar direto ao endereço: Travessa Teodoro Sampaio, Nº
-					37, Vale das Pedrinhas, Salvador - BA, 41925-790. Não esqueca de nos
-					comunicar ao comprar!
+					{APP_CONTENT.introShipping}
 				</Typography>
 			</div>
 			<Lista />
