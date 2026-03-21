@@ -19,7 +19,7 @@ function safeDarken(color, coefficient) {
 }
 
 /**
- * Tema Material-UI alinhado com APP_THEME (.env), incluindo overrides que antes
+ * Tema Material-UI alinhado com APP_THEME (VITE_THEME_VARIATION), incluindo overrides que antes
  * herdavam o rosa por defeito da biblioteca.
  */
 export const muiTheme = createMuiTheme({

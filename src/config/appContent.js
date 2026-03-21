@@ -5,7 +5,7 @@ import { APP_THEME } from './theme';
 /**
  * Único ponto de configuração de textos e mídia da página.
  * Ajuste aqui títulos, nomes, parágrafos, imagem principal e lista inicial (referência/seed).
- * Cores: ver `APP_THEME` e variáveis `VITE_COLOR_*` no `.env` (ver `.env.example`).
+ * Cores: `APP_THEME` via `VITE_THEME_VARIATION` (1–30) no `.env`; lista em `themes.md`.
  */
 export const APP_CONTENT = {
 	documentTitle: 'Lista de Chá',
@@ -42,7 +42,7 @@ export const APP_CONTENT = {
 		nameRequiredAlert: 'É necessário digitar um nome antes de assinar!',
 	},
 
-	/** Paleta (hex ou rgb) — preferir editar via `.env` */
+	/** Paleta ativa — escolher com `VITE_THEME_VARIATION` no `.env` */
 	theme: APP_THEME,
 };
 

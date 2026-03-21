@@ -1,4 +1,4 @@
-/* Valores alinhados com fallbacks em src/config/theme.js (antes do JS, evita flash incoerente) */
+/* Alinhado com o tema 1 em themePalettes.js até o JS aplicar a paleta de VITE_THEME_VARIATION */
 :root {
   --color-accent: #90caf9;
   --color-primary: #1565c0;

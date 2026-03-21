@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-/* Primeiro: aplica --color-* no <html> a partir do .env (ver theme.js) */
+/* Primeiro: aplica --color-* no <html> (theme.js + VITE_THEME_VARIATION) */
 import './config/theme.js';
 import './index.css';
 import App from './App';

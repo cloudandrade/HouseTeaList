@@ -5,7 +5,9 @@ Projeto de lista online (ex.: chá de casa nova). O frontend está na raiz (**Vi
 ## Personalização (textos, lista e cores)
 
 - `src/config/appContent.js` — objeto **`APP_CONTENT`** (textos e imagem); inclui **`theme`** (referência à paleta)
-- `src/config/theme.js` — leitura das **`VITE_COLOR_*`** e injeção das variáveis CSS
+- `src/config/theme.js` — aplica a paleta escolhida e injeta variáveis CSS `--color-*`
+- `src/config/themePalettes.js` — **30 paletas** numeradas (1–30)
+- **`themes.md`** — tabela de nomes e cores hex de cada tema
 - `data/listaInicial.json` — **fonte única** dos itens iniciais (usada pelo front e pelo seed da API quando o MongoDB está vazio)
 
 A **imagem do topo** é o import `heroImage` em `appContent.js` (por defeito `src/img/img1.jpg`).
@@ -15,7 +17,7 @@ A **imagem do topo** é o import `heroImage` em `appContent.js` (por defeito `sr
 Na raiz, o **`.env`** define:
 
 - **`VITE_API_URL`** — URL da API (ex.: `http://localhost:5000`).
-- **`VITE_COLOR_*`** — cores do tema (hex ou `rgb(...)`). Ver `src/config/theme.js` e comentários em **`.env.example`** (exemplos para azul, verde, amarelo, marrom, preto/branco).
+- **`VITE_THEME_VARIATION`** — inteiro **1** a **30** para escolher a paleta. Detalhes e cores em **`themes.md`**.
 
 As cores são aplicadas em `src/config/appContent.js` via **`APP_CONTENT.theme`** / **`APP_THEME`** e em variáveis CSS `--color-*`.
 

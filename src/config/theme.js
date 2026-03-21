@@ -1,60 +1,24 @@
 /**
- * Cores do tema — variáveis `VITE_COLOR_*` no `.env`.
- * Valores hex devem ir entre aspas no `.env` (ex. `"#2e7d32"`): `#` sem aspas inicia comentário e o valor fica vazio.
- *
- * Cada `import.meta.env.VITE_*` está declarado em constante no topo do ficheiro.
- * Assim o Vite encontra todas as chaves no scan estático (evita casos em que
- * só parte das variáveis era injetada em dev/build).
+ * Tema ativo a partir de `VITE_THEME_VARIATION` (1–30) no `.env`.
+ * Paletas definidas em `themePalettes.js`; referência visual em `themes.md` na raiz do projeto.
  */
-function colorFromEnv(value, fallback) {
-	if (value == null) return fallback;
-	const s = String(value).trim();
-	return s !== '' ? s : fallback;
-}
+import { getThemePaletteForVariation } from './themePalettes';
 
-function firstColor(...candidates) {
-	for (const c of candidates) {
-		if (c == null) continue;
-		const s = String(c).trim();
-		if (s !== '') return s;
-	}
-	return null;
-}
-
-// Referências explícitas (obrigatório para o Vite substituir no bundle)
-const VITE_COLOR_PRIMARY = import.meta.env.VITE_COLOR_PRIMARY;
-const VITE_COLOR_ACCENT = import.meta.env.VITE_COLOR_ACCENT;
-const VITE_COLOR_SURFACE = import.meta.env.VITE_COLOR_SURFACE;
-const VITE_COLOR_BACKGROUND_A = import.meta.env.VITE_COLOR_BACKGROUND_A;
-const VITE_COLOR_BACKGROUND_B = import.meta.env.VITE_COLOR_BACKGROUND_B;
-const VITE_COLOR_TEXT = import.meta.env.VITE_COLOR_TEXT;
-const VITE_COLOR_TEXT_ON_PRIMARY = import.meta.env.VITE_COLOR_TEXT_ON_PRIMARY;
-
-/** Fallbacks neutros (azul) — já não usamos #f8bbd0 para não “parecer” que só o accent falha. */
-const DEFAULT_PRIMARY = '#1565c0';
-const DEFAULT_ACCENT = '#90caf9';
-
-const resolvedPrimary = colorFromEnv(VITE_COLOR_PRIMARY, DEFAULT_PRIMARY);
-const resolvedAccent = colorFromEnv(VITE_COLOR_ACCENT, DEFAULT_ACCENT);
+const VITE_THEME_VARIATION = import.meta.env.VITE_THEME_VARIATION;
+const palette = getThemePaletteForVariation(VITE_THEME_VARIATION);
 
 export const APP_THEME = {
-	primary: resolvedPrimary,
-
-	accent: resolvedAccent,
-
-	surface: colorFromEnv(VITE_COLOR_SURFACE, '#ffffff'),
-
-	backgroundA: colorFromEnv(
-		firstColor(VITE_COLOR_BACKGROUND_A, VITE_COLOR_ACCENT),
-		'#eef2f6'
-	),
-
-	backgroundB: colorFromEnv(VITE_COLOR_BACKGROUND_B, '#ffffff'),
-
-	text: colorFromEnv(VITE_COLOR_TEXT, '#212121'),
-
-	textOnPrimary: colorFromEnv(VITE_COLOR_TEXT_ON_PRIMARY, '#ffffff'),
+	primary: palette.primary,
+	accent: palette.accent,
+	surface: palette.surface,
+	backgroundA: palette.backgroundA,
+	backgroundB: palette.backgroundB,
+	text: palette.text,
+	textOnPrimary: palette.textOnPrimary,
 };
+
+/** Metadados da paleta escolhida (id e nome). */
+export const APP_THEME_META = { id: palette.id, name: palette.name };
 
 export function applyThemeCssVariables(theme = APP_THEME) {
 	if (typeof document === 'undefined') return;
