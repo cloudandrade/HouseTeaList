@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Typography,
 	Accordion,
@@ -47,12 +47,27 @@ export default function DemoStaticGiftList({ items, content }) {
 	const textFieldClasses = useTextFieldStyles();
 	const list = Array.isArray(items) ? items : [];
 	const [namesById, setNamesById] = useState({});
+	/** Itens “assinados” na demo: após nome válido + aviso de demonstração. */
+	const [signedById, setSignedById] = useState({});
+
+	/* Primeiro item começa como exemplo já assinado (como na demo anterior). */
+	useEffect(() => {
+		if (list.length === 0) return;
+		setSignedById((prev) => {
+			if (Object.keys(prev).length > 0) return prev;
+			const first = list[0];
+			if (!first?.id) return prev;
+			return {
+				[first.id]: { name: DEMO_SIGNED_NAME },
+			};
+		});
+	}, [list]);
 
 	const setNameFor = (id, value) => {
 		setNamesById((prev) => ({ ...prev, [id]: value }));
 	};
 
-	const handleDemoAssinar = (item) => {
+	const handleDemoAssinar = async (item) => {
 		const nome = String(namesById[item.id] ?? '').trim();
 		if (nome.length <= 2) {
 			void showAlert({
@@ -61,22 +76,24 @@ export default function DemoStaticGiftList({ items, content }) {
 			});
 			return;
 		}
-		void showAlert({
+		await showAlert({
 			title: 'Demonstração',
 			message: DEMO_ONLY_MESSAGE,
 			confirmLabel: 'Entendi',
 		});
+		setSignedById((prev) => ({ ...prev, [item.id]: { name: nome } }));
+		setNamesById((prev) => ({ ...prev, [item.id]: '' }));
 	};
 
 	return (
 		<div style={{ opacity: 0.95, width: '100%' }}>
 			{list.map((item, index) => {
-				const isFirst = index === 0;
+				const signed = Boolean(signedById[item.id]);
 				return (
 					<div key={item.id}>
 						<Accordion
 							className="accordion"
-							defaultExpanded={isFirst}
+							defaultExpanded={index === 0}
 						>
 							<AccordionSummary
 								expandIcon={<ExpandMoreIcon />}
@@ -84,30 +101,36 @@ export default function DemoStaticGiftList({ items, content }) {
 								id={`demo-header-${item.id}`}
 							>
 								<FormControlLabel
+									style={{
+										margin: 0,
+										width: '100%',
+										alignItems: 'flex-start',
+									}}
 									control={
 										<Checkbox
 											color="primary"
-											checked={isFirst}
-											disabled={isFirst}
+											checked={signed}
 											onClick={(e) => e.stopPropagation()}
-											onFocus={(e) => e.stopPropagation()}
 										/>
 									}
+									label={
+										<Typography
+											className="accordion-title"
+											style={{
+												marginTop: '5px',
+												fontSize: 20,
+												color: theme.text,
+											}}
+										>
+											{item.item}
+										</Typography>
+									}
 								/>
-								<Typography
-									style={{
-										marginTop: '5px',
-										fontSize: 20,
-										color: theme.text,
-									}}
-								>
-									{item.item}
-								</Typography>
 							</AccordionSummary>
 							<AccordionDetails
 								className="accordion-details-pane"
 								style={
-									isFirst
+									signed
 										? {
 												backgroundColor: theme.primary,
 												color: theme.textOnPrimary,
@@ -115,7 +138,7 @@ export default function DemoStaticGiftList({ items, content }) {
 										: { backgroundColor: theme.surface }
 								}
 							>
-								{isFirst ? (
+								{signed ? (
 									<div className="assinado-div">
 										<Typography
 											component="span"
@@ -134,7 +157,7 @@ export default function DemoStaticGiftList({ items, content }) {
 												color: theme.textOnPrimary,
 											}}
 										>
-											{DEMO_SIGNED_NAME}
+											{signedById[item.id]?.name ?? ''}
 										</Typography>
 									</div>
 								) : (
@@ -142,7 +165,7 @@ export default function DemoStaticGiftList({ items, content }) {
 										className="accordion-sign-form"
 										onSubmit={(e) => {
 											e.preventDefault();
-											handleDemoAssinar(item);
+											void handleDemoAssinar(item);
 										}}
 									>
 										<TextField

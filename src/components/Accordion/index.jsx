@@ -150,22 +150,31 @@ export default function SimpleAccordion() {
 									id="panel1a-header"
 								>
 									<FormControlLabel
+										style={{
+											margin: 0,
+											width: '100%',
+											alignItems: 'flex-start',
+										}}
 										control={
 											<Checkbox
 												color="primary"
 												checked={item.checked}
+												onClick={(e) => e.stopPropagation()}
 											/>
 										}
+										label={
+											<Typography
+												className="accordion-title"
+												style={{
+													marginTop: '5px',
+													fontSize: 20,
+													color: theme.text,
+												}}
+											>
+												{item.item}
+											</Typography>
+										}
 									/>
-									<Typography
-										style={{
-											marginTop: '5px',
-											fontSize: 20,
-											color: theme.text,
-										}}
-									>
-										{item.item}
-									</Typography>
 								</AccordionSummary>
 								<AccordionDetails
 									className="accordion-details-pane"
