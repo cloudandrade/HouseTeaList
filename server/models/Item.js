@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Item = new Schema({
+const itemSchema = new Schema({
 	id: {
 		type: String,
 		required: true,
@@ -18,4 +18,5 @@ const Item = new Schema({
 		type: Boolean,
 	},
 });
-mongoose.model('itens', Item);
+module.exports =
+	mongoose.models.itens || mongoose.model('itens', itemSchema);

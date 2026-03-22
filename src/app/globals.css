@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&display=swap');
+
+/* Alinhado com o tema 1 em themePalettes.js até o JS aplicar a paleta de NEXT_PUBLIC_THEME_VARIATION */
+:root {
+	--color-accent: #90caf9;
+	--color-primary: #1565c0;
+	--color-surface: #ffffff;
+	--color-background-a: #eef2f6;
+	--color-background-b: #ffffff;
+	--color-text: #212121;
+	--color-text-on-primary: #ffffff;
+}
+
+body {
+	margin: 0;
+	color: var(--color-text);
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-size: 50px 50px;
+	background-image: conic-gradient(
+		var(--color-background-a) 90deg,
+		var(--color-background-b) 90deg 180deg,
+		var(--color-background-a) 180deg 270deg,
+		var(--color-background-b) 270deg
+	);
+}
+
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+		monospace;
+}
+
+.box1 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.child1 {
+	position: relative;
+	margin: 1px;
+}
+
+.img {
+	width: 200px;
+	height: 200px;
+	object-fit: cover;
+	object-position: 20% 90%;
+	border-radius: 50%;
+	border: 5px solid var(--color-primary);
+}
+
+.box3 {
+	margin: 15px;
+	border-radius: 10px;
+	border: 2px solid var(--color-primary);
+	display: block;
+	background-color: var(--color-surface);
+	opacity: 0.8;
+}

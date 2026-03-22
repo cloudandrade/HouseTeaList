@@ -36,4 +36,6 @@ const AppSettingsSchema = new Schema({
 	accordion: AccordionLabelsSchema,
 });
 
-mongoose.model('appsettings', AppSettingsSchema);
+module.exports =
+	mongoose.models.appsettings ||
+	mongoose.model('appsettings', AppSettingsSchema);

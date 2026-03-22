@@ -6,7 +6,7 @@ function requireConfigKey(req, res, next) {
 	if (!expected || String(expected).trim() === '') {
 		return res.status(503).json({
 			error:
-				'CONFIG_ADMIN_KEY não está definida no servidor (.env da API).',
+				'CONFIG_ADMIN_KEY não está definida no servidor (.env / .env.local).',
 		});
 	}
 	const sent = req.headers['x-config-key'];

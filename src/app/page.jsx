@@ -1,5 +1,6 @@
+'use client';
+
 import { useEffect } from 'react';
-import '../App.css';
 import { Typography, CircularProgress } from '@material-ui/core';
 import Lista from '../components/Accordion';
 import { useAppContent } from '../context/AppContentContext';

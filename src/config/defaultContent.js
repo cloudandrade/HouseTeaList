@@ -1,5 +1,7 @@
-import heroImage from '../img/img1.jpg';
 import listaInicialItens from '../../data/listaInicial.json';
+
+/** Mesma imagem que `src/img/img1.jpg`, servida em `/img1.jpg` (pasta `public`). */
+const heroImage = '/img1.jpg';
 
 /**
  * Conteúdo estático por defeito (antes de qualquer override na base de dados).

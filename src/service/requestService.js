@@ -1,11 +1,14 @@
 import axios from 'axios';
 
 /**
- * - Se `VITE_API_URL` estiver definida (ex. `http://localhost:5000`), usa diretamente.
- * - Se estiver vazia / omitida, usa `/api` → proxy do Vite para a API (ver `vite.config.js`).
+ * - Se `NEXT_PUBLIC_API_URL` estiver definida (ex. `http://localhost:3000`), usa diretamente.
+ * - Se estiver vazia / omitida, usa `/api` (rotas API do Next na mesma origem).
  */
 function resolveApiBase() {
-	const raw = import.meta.env.VITE_API_URL;
+	const raw =
+		typeof process !== 'undefined' && process.env
+			? process.env.NEXT_PUBLIC_API_URL
+			: undefined;
 	if (raw == null || String(raw).trim() === '') {
 		return '/api';
 	}

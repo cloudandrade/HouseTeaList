@@ -1,19 +1,15 @@
 const fs = require('fs');
 const path = require('path');
-const express = require('express');
-const router = express.Router();
 const mongoose = require('mongoose');
 
-require('../models/Item');
-require('../models/AppSettings');
 const Item = mongoose.model('itens');
 const AppSettings = mongoose.model('appsettings');
 
-const { requireConfigKey } = require('../middleware/requireConfigKey');
-const { mergeAppSettingsResponse } = require('../utils/mergeAppSettings');
-const { THEME_PALETTE_COUNT } = require('../config/themeConstants');
+const { mergeAppSettingsResponse } = require('./utils/mergeAppSettings');
+const { THEME_PALETTE_COUNT } = require('./config/themeConstants');
+const { requireConfigKey } = require('./middleware/requireConfigKey');
 
-const SEED_PATH = path.join(__dirname, '..', '..', 'data', 'listaInicial.json');
+const SEED_PATH = path.join(process.cwd(), 'data', 'listaInicial.json');
 
 function normalizeSeedRows(raw) {
 	return raw.map((row) => ({
@@ -28,12 +24,7 @@ function sortListaPorId(lista) {
 	return [...lista].sort((a, b) => Number(a.id) - Number(b.id));
 }
 
-router.get('/', async (req, res) => {
-	res.send('tea list server online');
-});
-
-//get all itens
-router.get('/itens', async (req, res) => {
+async function handleGetItens(req, res) {
 	console.log('Buscando Lista de Itens');
 	try {
 		let lista = await Item.find({}).lean();
@@ -45,7 +36,6 @@ router.get('/itens', async (req, res) => {
 				await Item.insertMany(docs);
 				console.log('Lista vazia: seed aplicado a partir de data/listaInicial.json');
 			} catch (err) {
-				// Corrida entre pedidos paralelos ou índice único em `id`
 				console.log('Seed (possível corrida ou duplicado):', err.message);
 			}
 			lista = await Item.find({}).lean();
@@ -56,13 +46,12 @@ router.get('/itens', async (req, res) => {
 		console.error(err);
 		res.status(500).json({ error: 'Falha ao carregar lista de itens' });
 	}
-});
+}
 
-//update an iten
-router.put('/itens/:id', async (req, res) => {
+async function handlePutIten(req, res) {
 	console.log('Alterando Item');
 	const itemLista = req.body;
-	const id = req.params.id;
+	const id = req.query.id;
 
 	console.log('Id Enviado: ');
 	console.log(id);
@@ -97,10 +86,9 @@ router.put('/itens/:id', async (req, res) => {
 			console.log(erro);
 			res.send('houve um erro ao buscar item para ediçao: erro: ' + erro);
 		});
-});
+}
 
-/** Configuração pública da página (textos + opcional imagem base64); merge com defaults no servidor. */
-router.get('/app-settings', async (req, res) => {
+async function handleGetAppSettings(req, res) {
 	try {
 		const doc = await AppSettings.findOne({ singletonKey: 'main' }).lean();
 		res.json(mergeAppSettingsResponse(doc));
@@ -108,15 +96,14 @@ router.get('/app-settings', async (req, res) => {
 		console.error(err);
 		res.status(500).json({ error: 'Falha ao carregar configurações' });
 	}
-});
+}
 
-/** Valida a chave antes de mostrar o painel (corpo JSON). */
-router.post('/admin/verify-config-key', (req, res) => {
+function handlePostVerifyConfigKey(req, res) {
 	const expected = process.env.CONFIG_ADMIN_KEY;
 	if (!expected || String(expected).trim() === '') {
 		return res.status(503).json({
 			error:
-				'CONFIG_ADMIN_KEY não está definida no servidor (.env da API).',
+				'CONFIG_ADMIN_KEY não está definida no servidor (.env / .env.local).',
 		});
 	}
 	const key = req.body && req.body.key;
@@ -124,9 +111,9 @@ router.post('/admin/verify-config-key', (req, res) => {
 		return res.status(401).json({ error: 'Chave inválida.' });
 	}
 	return res.json({ ok: true });
-});
+}
 
-router.put('/admin/app-settings', requireConfigKey, async (req, res) => {
+async function handlePutAdminAppSettings(req, res) {
 	try {
 		const body = req.body || {};
 		const $set = { singletonKey: 'main' };
@@ -160,10 +147,7 @@ router.put('/admin/app-settings', requireConfigKey, async (req, res) => {
 			body.heroImageDataUrl === '';
 		if (clearImage && body.heroImageDataUrl !== undefined) {
 			update.$unset = { heroImageDataUrl: '' };
-		} else if (
-			body.heroImageDataUrl !== undefined &&
-			!clearImage
-		) {
+		} else if (body.heroImageDataUrl !== undefined && !clearImage) {
 			$set.heroImageDataUrl = String(body.heroImageDataUrl);
 		}
 
@@ -187,9 +171,9 @@ router.put('/admin/app-settings', requireConfigKey, async (req, res) => {
 		console.error(err);
 		res.status(500).json({ error: 'Falha ao guardar configurações' });
 	}
-});
+}
 
-router.post('/admin/itens', requireConfigKey, async (req, res) => {
+async function handlePostAdminItens(req, res) {
 	try {
 		const label = req.body && req.body.item;
 		if (!label || String(label).trim() === '') {
@@ -213,11 +197,11 @@ router.post('/admin/itens', requireConfigKey, async (req, res) => {
 		console.error(err);
 		res.status(500).json({ error: 'Falha ao criar item' });
 	}
-});
+}
 
-router.delete('/admin/itens/:mongoId', requireConfigKey, async (req, res) => {
+async function handleDeleteAdminItem(req, res) {
 	try {
-		const { mongoId } = req.params;
+		const { mongoId } = req.query;
 		if (!mongoose.Types.ObjectId.isValid(mongoId)) {
 			return res.status(400).json({ error: 'Id inválido.' });
 		}
@@ -230,6 +214,15 @@ router.delete('/admin/itens/:mongoId', requireConfigKey, async (req, res) => {
 		console.error(err);
 		res.status(500).json({ error: 'Falha ao remover item' });
 	}
-});
+}
 
-module.exports = router;
+module.exports = {
+	requireConfigKey,
+	handleGetItens,
+	handlePutIten,
+	handleGetAppSettings,
+	handlePostVerifyConfigKey,
+	handlePutAdminAppSettings,
+	handlePostAdminItens,
+	handleDeleteAdminItem,
+};

@@ -1,5 +1,5 @@
 /**
- * Cores do tema: `VITE_THEME_VARIATION` no `.env` até a API devolver outro valor em `app-settings`.
+ * Cores do tema: `NEXT_PUBLIC_THEME_VARIATION` no `.env` até a API devolver outro valor em `app-settings`.
  * Paletas em `themePalettes.js`.
  */
 import {
@@ -7,11 +7,14 @@ import {
 	THEME_PALETTE_COUNT,
 } from './themePalettes';
 
-const VITE_THEME_VARIATION = import.meta.env.VITE_THEME_VARIATION;
+const NEXT_PUBLIC_THEME_VARIATION =
+	typeof process !== 'undefined' && process.env
+		? process.env.NEXT_PUBLIC_THEME_VARIATION
+		: undefined;
 
 /** Número 1…N a partir do .env (fallback 1). */
 export function parseEnvThemeVariation() {
-	const n = Number.parseInt(String(VITE_THEME_VARIATION ?? '').trim(), 10);
+	const n = Number.parseInt(String(NEXT_PUBLIC_THEME_VARIATION ?? '').trim(), 10);
 	if (Number.isFinite(n) && n >= 1 && n <= THEME_PALETTE_COUNT) return n;
 	return 1;
 }
@@ -33,7 +36,7 @@ export function getAppThemeFromVariation(rawId) {
 	return getAppThemeFromPalette(p);
 }
 
-const initialPalette = getThemePaletteForVariation(VITE_THEME_VARIATION);
+const initialPalette = getThemePaletteForVariation(NEXT_PUBLIC_THEME_VARIATION);
 
 /** Valores iniciais (antes do primeiro fetch /app-settings). */
 export const APP_THEME = getAppThemeFromPalette(initialPalette);
