@@ -6,16 +6,74 @@
 	margin-top: 2px;
 }
 
-.text {
-	width: 300px;
+/* Painel expandido: ocupa a largura útil; laterais curtas (sobrepor padding MUI) */
+.accordion-details-pane.MuiAccordionDetails-root {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 8px 12px 14px !important;
 }
 
-.button {
-	width: 70px;
-	height: 30px;
-}
-
+/* Assinado: texto centrado na faixa colorida */
 .assinado-div {
-	margin-top: 5px;
 	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 4px;
+	width: 100%;
+	padding: 6px 0;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+.assinado-div .MuiTypography-root {
+	margin: 0 !important;
+}
+
+/* Formulário de assinatura: mobile primeiro — campo e botão empilhados, mesma largura */
+.accordion-sign-form {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	padding: 4px 0 6px;
+}
+
+.accordion-sign-form .MuiTextField-root {
+	width: 100%;
+	max-width: 100%;
+}
+
+.accordion-sign-form .accordion-sign-button.MuiButton-root {
+	width: 100%;
+	min-height: 42px;
+	box-sizing: border-box;
+}
+
+@media (min-width: 600px) {
+	.accordion-details-pane.MuiAccordionDetails-root {
+		padding: 8px 16px 16px !important;
+	}
+
+	.accordion-sign-form {
+		flex-direction: row;
+		align-items: stretch;
+		padding: 4px 0 6px;
+		gap: 12px;
+	}
+
+	.accordion-sign-form .MuiTextField-root {
+		flex: 1 1 0;
+		min-width: 0;
+		width: auto;
+	}
+
+	.accordion-sign-form .accordion-sign-button.MuiButton-root {
+		flex: 1 1 0;
+		min-width: 0;
+		width: auto;
+		min-height: 40px;
+	}
 }

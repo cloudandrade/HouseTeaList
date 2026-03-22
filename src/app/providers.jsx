@@ -3,9 +3,9 @@
 import { AppContentProvider } from '../context/AppContentContext';
 import { DynamicThemeProvider } from '../context/DynamicThemeProvider';
 
-export function Providers({ children }) {
+export function Providers({ children, slug }) {
 	return (
-		<AppContentProvider>
+		<AppContentProvider slug={slug}>
 			<DynamicThemeProvider>{children}</DynamicThemeProvider>
 		</AppContentProvider>
 	);

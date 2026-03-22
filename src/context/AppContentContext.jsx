@@ -8,15 +8,22 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { DEFAULT_APP_PAGE_CONTENT } from '../config/defaultContent';
 import {
 	getAppThemeFromVariation,
 	parseEnvThemeVariation,
 } from '../config/theme';
 import { getThemePaletteForVariation } from '../config/themePalettes';
 import { getAppSettings } from '../service/requestService';
+import { NAME_REQUIRED_ALERT } from '../config/systemMessages';
 
 const AppContentContext = createContext(null);
+
+const EMPTY_ACCORDION = {
+	nameFieldLabel: '',
+	signButton: '',
+	signedByPrefix: '',
+	nameRequiredAlert: NAME_REQUIRED_ALERT,
+};
 
 function resolveThemeVariation(apiPayload) {
 	if (
@@ -29,18 +36,37 @@ function resolveThemeVariation(apiPayload) {
 	return parseEnvThemeVariation();
 }
 
-function buildMergedContent(apiPayload) {
-	const themeVariation = resolveThemeVariation(apiPayload);
-	const theme = getAppThemeFromVariation(themeVariation);
+function normalizeAccordion(acc) {
+	const out = { ...EMPTY_ACCORDION };
+	if (!acc || typeof acc !== 'object') return out;
+	for (const k of Object.keys(EMPTY_ACCORDION)) {
+		if (acc[k] != null) out[k] = String(acc[k]);
+	}
+	return out;
+}
 
+/**
+ * Conteúdo para páginas de tenant: só o que vem da API (sem copy da demo da home).
+ */
+function buildMergedContent(apiPayload) {
 	if (!apiPayload) {
+		const themeVariation = parseEnvThemeVariation();
 		return {
-			...DEFAULT_APP_PAGE_CONTENT,
+			documentTitle: '',
+			heroTitle: '',
+			listSubtitle: '',
+			introPrimary: '',
+			introNote: '',
+			introShipping: '',
 			themeVariation,
-			theme,
+			theme: getAppThemeFromVariation(themeVariation),
+			heroImage: '',
+			accordion: { ...EMPTY_ACCORDION },
 		};
 	}
-	const { heroImageDataUrl, ...rest } = apiPayload;
+	const themeVariation = resolveThemeVariation(apiPayload);
+	const theme = getAppThemeFromVariation(themeVariation);
+	const { heroImageDataUrl, accordion, ...rest } = apiPayload;
 	return {
 		...rest,
 		themeVariation,
@@ -48,25 +74,27 @@ function buildMergedContent(apiPayload) {
 		heroImage:
 			heroImageDataUrl && String(heroImageDataUrl).trim() !== ''
 				? heroImageDataUrl
-				: DEFAULT_APP_PAGE_CONTENT.heroImage,
-		listaInicialItens: DEFAULT_APP_PAGE_CONTENT.listaInicialItens,
-		accordion: {
-			...DEFAULT_APP_PAGE_CONTENT.accordion,
-			...(apiPayload.accordion || {}),
-		},
+				: '',
+		accordion: normalizeAccordion(accordion),
 	};
 }
 
-export function AppContentProvider({ children }) {
+export function AppContentProvider({ children, slug }) {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [remote, setRemote] = useState(null);
 
 	const load = useCallback(async () => {
+		if (!slug || String(slug).trim() === '') {
+			setLoading(false);
+			setError(new Error('Slug em falta'));
+			setRemote(null);
+			return;
+		}
 		setLoading(true);
 		setError(null);
 		try {
-			const { data } = await getAppSettings();
+			const { data } = await getAppSettings(slug);
 			setRemote(data);
 		} catch (e) {
 			console.error(e);
@@ -75,25 +103,23 @@ export function AppContentProvider({ children }) {
 		} finally {
 			setLoading(false);
 		}
-	}, []);
+	}, [slug]);
 
 	useEffect(() => {
 		void load();
 	}, [load]);
 
-	const content = useMemo(
-		() => buildMergedContent(remote),
-		[remote]
-	);
+	const content = useMemo(() => buildMergedContent(remote), [remote]);
 
 	const value = useMemo(
 		() => ({
+			slug,
 			content,
 			loading,
 			error,
 			reload: load,
 		}),
-		[content, loading, error, load]
+		[slug, content, loading, error, load]
 	);
 
 	return (

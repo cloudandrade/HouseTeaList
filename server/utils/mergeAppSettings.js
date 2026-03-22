@@ -1,5 +1,5 @@
-const defaults = require('../config/defaultAppContent');
 const { THEME_PALETTE_COUNT } = require('../config/themeConstants');
+const { NAME_REQUIRED_ALERT } = require('../config/systemMessages');
 
 function clampThemeVariation(value) {
 	const n = Number.parseInt(String(value ?? '').trim(), 10);
@@ -7,54 +7,35 @@ function clampThemeVariation(value) {
 	return Math.min(THEME_PALETTE_COUNT, Math.max(1, n));
 }
 
-function pickDefinedAccordion(acc) {
-	if (!acc || typeof acc !== 'object') return {};
-	const out = {};
-	for (const k of [
-		'nameFieldLabel',
-		'signButton',
-		'signedByPrefix',
-		'nameRequiredAlert',
-	]) {
-		if (acc[k] != null && String(acc[k]).trim() !== '') out[k] = String(acc[k]).trim();
-	}
-	return out;
+function pickStr(val) {
+	return val != null && String(val).trim() !== '' ? String(val).trim() : '';
+}
+
+function mergeAccordionFromDoc(acc) {
+	const a = acc && typeof acc === 'object' ? acc : {};
+	return {
+		nameFieldLabel: pickStr(a.nameFieldLabel),
+		signButton: pickStr(a.signButton),
+		signedByPrefix: pickStr(a.signedByPrefix),
+		nameRequiredAlert: NAME_REQUIRED_ALERT,
+	};
 }
 
 /**
+ * `document.title` segue sempre o título principal (hero); mensagem de nome obrigatório é global.
  * @param {import('mongoose').Document | Record<string, unknown> | null | undefined} doc
  */
 function mergeAppSettingsResponse(doc) {
 	const d = doc && doc.toObject ? doc.toObject() : doc || {};
-	const merged = {
-		documentTitle:
-			d.documentTitle != null && String(d.documentTitle).trim() !== ''
-				? String(d.documentTitle).trim()
-				: defaults.documentTitle,
-		heroTitle:
-			d.heroTitle != null && String(d.heroTitle).trim() !== ''
-				? String(d.heroTitle).trim()
-				: defaults.heroTitle,
-		listSubtitle:
-			d.listSubtitle != null && String(d.listSubtitle).trim() !== ''
-				? String(d.listSubtitle).trim()
-				: defaults.listSubtitle,
-		introPrimary:
-			d.introPrimary != null && String(d.introPrimary).trim() !== ''
-				? String(d.introPrimary).trim()
-				: defaults.introPrimary,
-		introNote:
-			d.introNote != null && String(d.introNote).trim() !== ''
-				? String(d.introNote).trim()
-				: defaults.introNote,
-		introShipping:
-			d.introShipping != null && String(d.introShipping).trim() !== ''
-				? String(d.introShipping).trim()
-				: defaults.introShipping,
-		accordion: {
-			...defaults.accordion,
-			...pickDefinedAccordion(d.accordion),
-		},
+	const hero = pickStr(d.heroTitle);
+	return {
+		documentTitle: hero || 'Lista de Chá',
+		heroTitle: hero,
+		listSubtitle: pickStr(d.listSubtitle),
+		introPrimary: pickStr(d.introPrimary),
+		introNote: pickStr(d.introNote),
+		introShipping: pickStr(d.introShipping),
+		accordion: mergeAccordionFromDoc(d.accordion),
 		heroImageDataUrl:
 			d.heroImageDataUrl != null && String(d.heroImageDataUrl).trim() !== ''
 				? String(d.heroImageDataUrl).trim()
@@ -63,7 +44,6 @@ function mergeAppSettingsResponse(doc) {
 			d.themeVariation != null ? d.themeVariation : 1
 		),
 	};
-	return merged;
 }
 
-module.exports = { mergeAppSettingsResponse, defaults };
+module.exports = { mergeAppSettingsResponse };

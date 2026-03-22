@@ -13,11 +13,11 @@ const AccordionLabelsSchema = new Schema(
 );
 
 const AppSettingsSchema = new Schema({
-	singletonKey: {
-		type: String,
+	tenantId: {
+		type: Schema.Types.ObjectId,
+		ref: 'tenants',
 		required: true,
 		unique: true,
-		default: 'main',
 	},
 	documentTitle: String,
 	heroTitle: String,
@@ -25,9 +25,7 @@ const AppSettingsSchema = new Schema({
 	introPrimary: String,
 	introNote: String,
 	introShipping: String,
-	/** data:image/...;base64,... — opcional; se vazio, o cliente usa a imagem estática */
 	heroImageDataUrl: String,
-	/** Paleta 1…30 (ver `themes.md` / `themePalettes.js` no front). */
 	themeVariation: {
 		type: Number,
 		min: 1,

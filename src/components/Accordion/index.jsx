@@ -17,6 +17,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { getAll, updateItem } from '../../service/requestService';
 import { useAppContent } from '../../context/AppContentContext';
+import { NAME_REQUIRED_ALERT } from '../../config/systemMessages';
 
 const useTextFieldStyles = makeStyles((theme) => ({
 	root: {
@@ -48,57 +49,91 @@ const useStyles = makeStyles((theme) => ({
 export default function SimpleAccordion() {
 	const classes = useStyles();
 	const textFieldClasses = useTextFieldStyles();
-	const { content } = useAppContent();
+	const { content, slug } = useAppContent();
 	const { theme } = content;
 	const [lista, setLista] = useState([]);
-	const [nome, setNome] = useState('');
+	const [namesById, setNamesById] = useState({});
+	const [loading, setLoading] = useState(true);
+	const [loadError, setLoadError] = useState(false);
 
 	useEffect(() => {
+		if (!slug) return;
 		fetchData();
-	}, []);
+	}, [slug]);
 
 	function fetchData() {
-		setLista([]);
+		if (!slug) return;
+		setLoading(true);
+		setLoadError(false);
 
-		getAll()
+		getAll(slug)
 			.then((response) => {
-				setLista(response.data);
+				setLista(Array.isArray(response.data) ? response.data : []);
+				setLoadError(false);
 			})
 			.catch((error) => {
 				console.error(error);
+				setLista([]);
+				setLoadError(true);
+			})
+			.finally(() => {
+				setLoading(false);
 			});
 	}
 
 	function handleAssinar(item) {
+		const id = item._id || item.id;
+		const nome = String(namesById[id] ?? '').trim();
 		if (nome.length > 2) {
-			item.nome = nome;
-			item.checked = true;
+			const payload = { ...item, nome, checked: true };
 
-			updateItem(item)
+			updateItem(slug, payload)
 				.then((response) => {
 					console.log(response);
+					setNamesById((prev) => ({ ...prev, [id]: '' }));
 					fetchData();
 				})
 				.catch((error) => {
 					console.error(error);
 				});
 		} else {
-			alert(content.accordion.nameRequiredAlert);
+			alert(NAME_REQUIRED_ALERT);
 		}
 	}
 
 	return (
 		<div className={classes.root}>
-			{lista.length === 0 ? (
+			{loading ? (
 				<div
 					style={{
 						display: 'flex',
 						alignItems: 'center',
 						justifyContent: 'center',
+						minHeight: 120,
 					}}
 				>
 					<CircularProgress style={{ color: theme.primary }} />
 				</div>
+			) : loadError ? (
+				<Typography
+					align="center"
+					style={{
+						padding: '24px 16px',
+						color: theme.text,
+					}}
+				>
+					Não foi possível carregar a lista.
+				</Typography>
+			) : lista.length === 0 ? (
+				<Typography
+					align="center"
+					style={{
+						padding: '24px 16px',
+						color: theme.text,
+					}}
+				>
+					Lista vazia.
+				</Typography>
 			) : (
 				lista.map(function (item) {
 					return (
@@ -128,6 +163,7 @@ export default function SimpleAccordion() {
 									</Typography>
 								</AccordionSummary>
 								<AccordionDetails
+									className="accordion-details-pane"
 									style={
 										item.checked === false
 											? { backgroundColor: theme.surface }
@@ -138,49 +174,55 @@ export default function SimpleAccordion() {
 									}
 								>
 									{item.checked === false ? (
-										<Typography>
-											<form>
-												<TextField
-													className="text"
-													classes={{ root: textFieldClasses.root }}
-													label={content.accordion.nameFieldLabel}
-													variant="outlined"
-													size="small"
-													onBlur={(e) =>
-														setNome(e.target.value)
-													}
-												/>
-
-												<Button
-													variant="contained"
-													color="primary"
-													className="button"
-													style={{
-														marginLeft: '10px',
-														marginTop: '4px',
-													}}
-													onClick={() => handleAssinar(item)}
-												>
-													{content.accordion.signButton}
-												</Button>
-											</form>
-										</Typography>
+										<form
+											className="accordion-sign-form"
+											onSubmit={(e) => {
+												e.preventDefault();
+												handleAssinar(item);
+											}}
+										>
+											<TextField
+												fullWidth
+												classes={{ root: textFieldClasses.root }}
+												label={content.accordion.nameFieldLabel}
+												variant="outlined"
+												size="small"
+												value={
+													namesById[item._id || item.id] ?? ''
+												}
+												onChange={(e) => {
+													const id = item._id || item.id;
+													setNamesById((prev) => ({
+														...prev,
+														[id]: e.target.value,
+													}));
+												}}
+											/>
+											<Button
+												type="submit"
+												variant="contained"
+												color="primary"
+												className="accordion-sign-button"
+											>
+												{content.accordion.signButton}
+											</Button>
+										</form>
 									) : (
 										<div className="assinado-div">
 											<Typography
+												component="span"
 												style={{
 													fontSize: 16,
 													fontWeight: 'bold',
-													marginLeft: '10px',
 													color: theme.textOnPrimary,
 												}}
 											>
 												{content.accordion.signedByPrefix}
 											</Typography>
 											<Typography
+												component="span"
 												style={{
 													fontSize: 16,
-													marginLeft: '5px',
 													color: theme.textOnPrimary,
 												}}
 											>

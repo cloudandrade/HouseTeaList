@@ -1,5 +1,5 @@
 import './globals.css';
-import { Providers } from './providers';
+import SiteFooter from '../components/SiteFooter';
 
 export const metadata = {
 	title: 'Lista de Chá',
@@ -20,7 +20,16 @@ export default function RootLayout({ children }) {
 		<html lang="pt">
 			<body>
 				<noscript>É necessário JavaScript para executar esta aplicação.</noscript>
-				<Providers>{children}</Providers>
+				<div
+					style={{
+						minHeight: '100vh',
+						display: 'flex',
+						flexDirection: 'column',
+					}}
+				>
+					<div style={{ flex: 1 }}>{children}</div>
+					<SiteFooter />
+				</div>
 			</body>
 		</html>
 	);

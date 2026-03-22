@@ -1,108 +1,68 @@
 'use client';
 
-import { useEffect } from 'react';
-import { Typography, CircularProgress } from '@material-ui/core';
-import Lista from '../components/Accordion';
-import { useAppContent } from '../context/AppContentContext';
+import React, { useEffect, useMemo } from 'react';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { Box, Typography } from '@material-ui/core';
+import Link from 'next/link';
+import DemoStaticGiftList from '../components/DemoStaticGiftList';
+import EventPublicView from '../components/EventPublicView';
+import { DEMO_LANDING_PAGE_CONTENT } from '../config/defaultContent';
+import { createAppMuiTheme } from '../config/muiTheme';
+import { applyThemeCssVariables, getAppThemeFromVariation } from '../config/theme';
 
-export default function Home() {
-	const { content, loading } = useAppContent();
-	const { theme } = content;
+export default function HomePage() {
+	const themeVariation =
+		DEMO_LANDING_PAGE_CONTENT.themeVariation != null
+			? DEMO_LANDING_PAGE_CONTENT.themeVariation
+			: 1;
+	const colors = useMemo(
+		() => getAppThemeFromVariation(themeVariation),
+		[themeVariation]
+	);
+	const muiTheme = useMemo(() => createAppMuiTheme(colors), [colors]);
 
 	useEffect(() => {
-		if (content?.documentTitle) {
-			document.title = content.documentTitle;
-		}
-	}, [content?.documentTitle]);
+		applyThemeCssVariables(colors);
+	}, [colors]);
 
-	if (loading) {
-		return (
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-					minHeight: '50vh',
-				}}
-			>
-				<CircularProgress style={{ color: theme.primary }} />
-			</div>
-		);
-	}
+	const content = useMemo(
+		() => ({
+			...DEMO_LANDING_PAGE_CONTENT,
+			theme: colors,
+			themeVariation,
+		}),
+		[colors, themeVariation]
+	);
 
 	return (
-		<div className="App">
-			<div className="box1">
-				<Typography
-					color="primary"
-					style={{
-						fontFamily: 'Alex Brush',
-						fontSize: '38px',
-						fontWeight: 'bold',
-					}}
-				>
-					{content.heroTitle}
+		<ThemeProvider theme={muiTheme}>
+			<EventPublicView content={content} loading={false} error={null}>
+				<DemoStaticGiftList
+					items={DEMO_LANDING_PAGE_CONTENT.listaInicialItens}
+					content={content}
+				/>
+			</EventPublicView>
+			<Box
+				style={{
+					maxWidth: 640,
+					margin: '0 auto',
+					padding: '16px 24px 32px',
+					textAlign: 'center',
+				}}
+			>
+				<Typography variant="body2" color="textSecondary" paragraph>
+					Esta é uma página de <strong>demonstração</strong>. O teu evento fica
+					num endereço próprio após a configuração.
 				</Typography>
-			</div>
-			<div className="box1">
-				<div className="child1">
-					<img
-						src={content.heroImage}
-						className="img"
-						alt=""
-					/>
-				</div>
-			</div>
-			<div className="box1">
-				<Typography
-					color="primary"
-					style={{
-						fontFamily: 'Alex Brush',
-						fontSize: '32px',
-						fontWeight: 'bold',
-					}}
-				>
-					{content.listSubtitle}
+				<Typography variant="body2">
+					<Link
+						href="/config"
+						style={{ color: colors.primary, fontWeight: 600 }}
+					>
+						Configurar com a tua chave de acesso
+					</Link>
 				</Typography>
-			</div>
-
-			<div className="box3">
-				<Typography
-					style={{
-						margin: '15px',
-						fontFamily: 'Roboto',
-						fontSize: '16px',
-						fontWeight: '600',
-						color: theme.text,
-					}}
-				>
-					{content.introPrimary}
-				</Typography>
-				<Typography
-					style={{
-						margin: '12px',
-						fontFamily: 'Roboto',
-						fontSize: '12px',
-						fontWeight: '600',
-						color: theme.text,
-					}}
-				>
-					{content.introNote}
-				</Typography>
-				<Typography
-					style={{
-						margin: '12px',
-						marginTop: -10,
-						fontFamily: 'Roboto',
-						fontSize: '12px',
-						fontWeight: '600',
-						color: theme.text,
-					}}
-				>
-					{content.introShipping}
-				</Typography>
-			</div>
-			<Lista />
-		</div>
+			</Box>
+		</ThemeProvider>
 	);
 }

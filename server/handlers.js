@@ -1,5 +1,4 @@
-const fs = require('fs');
-const path = require('path');
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
 const Item = mongoose.model('itens');
@@ -7,40 +6,15 @@ const AppSettings = mongoose.model('appsettings');
 
 const { mergeAppSettingsResponse } = require('./utils/mergeAppSettings');
 const { THEME_PALETTE_COUNT } = require('./config/themeConstants');
-const { requireConfigKey } = require('./middleware/requireConfigKey');
-
-const SEED_PATH = path.join(process.cwd(), 'data', 'listaInicial.json');
-
-function normalizeSeedRows(raw) {
-	return raw.map((row) => ({
-		id: String(row.id),
-		item: row.item,
-		nome: row.nome || '',
-		checked: !!row.checked,
-	}));
-}
 
 function sortListaPorId(lista) {
 	return [...lista].sort((a, b) => Number(a.id) - Number(b.id));
 }
 
 async function handleGetItens(req, res) {
-	console.log('Buscando Lista de Itens');
+	console.log('Buscando Lista de Itens', req.tenantId);
 	try {
-		let lista = await Item.find({}).lean();
-
-		if (lista.length === 0) {
-			const raw = JSON.parse(fs.readFileSync(SEED_PATH, 'utf8'));
-			const docs = normalizeSeedRows(raw);
-			try {
-				await Item.insertMany(docs);
-				console.log('Lista vazia: seed aplicado a partir de data/listaInicial.json');
-			} catch (err) {
-				console.log('Seed (possível corrida ou duplicado):', err.message);
-			}
-			lista = await Item.find({}).lean();
-		}
-
+		const lista = await Item.find({ tenantId: req.tenantId }).lean();
 		res.json(sortListaPorId(lista));
 	} catch (err) {
 		console.error(err);
@@ -53,12 +27,7 @@ async function handlePutIten(req, res) {
 	const itemLista = req.body;
 	const id = req.query.id;
 
-	console.log('Id Enviado: ');
-	console.log(id);
-	console.log('Objeto Enviado: ');
-	console.log(itemLista);
-
-	Item.findOne({ _id: id })
+	Item.findOne({ _id: id, tenantId: req.tenantId })
 		.then((item) => {
 			if (!item) {
 				res.status(404).send('item não encontrado');
@@ -90,7 +59,7 @@ async function handlePutIten(req, res) {
 
 async function handleGetAppSettings(req, res) {
 	try {
-		const doc = await AppSettings.findOne({ singletonKey: 'main' }).lean();
+		const doc = await AppSettings.findOne({ tenantId: req.tenantId }).lean();
 		res.json(mergeAppSettingsResponse(doc));
 	} catch (err) {
 		console.error(err);
@@ -98,27 +67,31 @@ async function handleGetAppSettings(req, res) {
 	}
 }
 
-function handlePostVerifyConfigKey(req, res) {
-	const expected = process.env.CONFIG_ADMIN_KEY;
-	if (!expected || String(expected).trim() === '') {
-		return res.status(503).json({
-			error:
-				'CONFIG_ADMIN_KEY não está definida no servidor (.env / .env.local).',
-		});
-	}
+async function handlePostVerifyConfigKey(req, res) {
 	const key = req.body && req.body.key;
-	if (!key || String(key) !== String(expected)) {
-		return res.status(401).json({ error: 'Chave inválida.' });
+	if (!key || String(key).trim() === '') {
+		return res.status(400).json({ error: 'Chave em falta.' });
 	}
-	return res.json({ ok: true });
+	try {
+		const ok = await bcrypt.compare(
+			String(key),
+			req.tenant.accessKeyHash
+		);
+		if (!ok) {
+			return res.status(401).json({ error: 'Chave inválida.' });
+		}
+		return res.json({ ok: true });
+	} catch (err) {
+		console.error(err);
+		return res.status(500).json({ error: 'Falha ao validar chave.' });
+	}
 }
 
 async function handlePutAdminAppSettings(req, res) {
 	try {
 		const body = req.body || {};
-		const $set = { singletonKey: 'main' };
+		const $set = { tenantId: req.tenantId };
 		const textFields = [
-			'documentTitle',
 			'heroTitle',
 			'listSubtitle',
 			'introPrimary',
@@ -128,13 +101,11 @@ async function handlePutAdminAppSettings(req, res) {
 		for (const f of textFields) {
 			if (body[f] !== undefined) $set[f] = String(body[f]);
 		}
+		if (body.heroTitle !== undefined) {
+			$set.documentTitle = String(body.heroTitle);
+		}
 		if (body.accordion && typeof body.accordion === 'object') {
-			for (const k of [
-				'nameFieldLabel',
-				'signButton',
-				'signedByPrefix',
-				'nameRequiredAlert',
-			]) {
+			for (const k of ['nameFieldLabel', 'signButton', 'signedByPrefix']) {
 				if (body.accordion[k] !== undefined) {
 					$set[`accordion.${k}`] = String(body.accordion[k]);
 				}
@@ -161,11 +132,11 @@ async function handlePutAdminAppSettings(req, res) {
 			}
 		}
 
-		await AppSettings.findOneAndUpdate({ singletonKey: 'main' }, update, {
+		await AppSettings.findOneAndUpdate({ tenantId: req.tenantId }, update, {
 			upsert: true,
 			new: true,
 		});
-		const doc = await AppSettings.findOne({ singletonKey: 'main' }).lean();
+		const doc = await AppSettings.findOne({ tenantId: req.tenantId }).lean();
 		res.json(mergeAppSettingsResponse(doc));
 	} catch (err) {
 		console.error(err);
@@ -179,7 +150,7 @@ async function handlePostAdminItens(req, res) {
 		if (!label || String(label).trim() === '') {
 			return res.status(400).json({ error: 'Campo "item" é obrigatório.' });
 		}
-		const rows = await Item.find({}, { id: 1 }).lean();
+		const rows = await Item.find({ tenantId: req.tenantId }, { id: 1 }).lean();
 		let max = 0;
 		for (const row of rows) {
 			const n = parseInt(row.id, 10);
@@ -187,6 +158,7 @@ async function handlePostAdminItens(req, res) {
 		}
 		const nextId = String(max + 1);
 		const created = await Item.create({
+			tenantId: req.tenantId,
 			id: nextId,
 			item: String(label).trim(),
 			nome: '',
@@ -205,7 +177,10 @@ async function handleDeleteAdminItem(req, res) {
 		if (!mongoose.Types.ObjectId.isValid(mongoId)) {
 			return res.status(400).json({ error: 'Id inválido.' });
 		}
-		const removed = await Item.findByIdAndDelete(mongoId);
+		const removed = await Item.findOneAndDelete({
+			_id: mongoId,
+			tenantId: req.tenantId,
+		});
 		if (!removed) {
 			return res.status(404).json({ error: 'Item não encontrado.' });
 		}
@@ -217,7 +192,6 @@ async function handleDeleteAdminItem(req, res) {
 }
 
 module.exports = {
-	requireConfigKey,
 	handleGetItens,
 	handlePutIten,
 	handleGetAppSettings,

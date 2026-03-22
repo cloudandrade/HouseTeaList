@@ -1,17 +1,21 @@
 import listaInicialItens from '../../data/listaInicial.json';
+import { NAME_REQUIRED_ALERT } from './systemMessages';
 
 /** Mesma imagem que `src/img/img1.jpg`, servida em `/img1.jpg` (pasta `public`). */
 const heroImage = '/img1.jpg';
 
 /**
- * Conteúdo estático por defeito (antes de qualquer override na base de dados).
+ * Conteúdo da página inicial de demonstração (`/`) apenas.
+ * Não é usado como predefinição para tenants (GET /app-settings sem dados → campos vazios).
+ * O título do separador segue o título principal (como nas páginas reais).
  */
-export const DEFAULT_APP_PAGE_CONTENT = {
-	documentTitle: 'Lista de Chá',
+export const DEMO_LANDING_PAGE_CONTENT = {
+	themeVariation: 1,
 
 	heroTitle: 'Nosso Chá de casa nova!',
+	documentTitle: 'Nosso Chá de casa nova!',
 
-	listSubtitle: 'Lista de Jan & Kaire',
+	listSubtitle: 'Lista de X & Y',
 
 	introPrimary:
 		'Gostaríamos de humildemente pedir um apoio, vamos nos casar em ' +
@@ -19,14 +23,10 @@ export const DEFAULT_APP_PAGE_CONTENT = {
 		'história, deixe sua contribuição e lembraremos sempre de você!',
 
 	introNote:
-		'Obs: Respeitando o isolamento, os que assinarem receberão em mãos uma ' +
-		'lembrança e comemoraremos individualmente com o(a) amigo(a) que nos ' +
-		'presentear durante essa entrega.',
+		'Obs: Todos os presentes serão entregues em mãos até a data X.',
 
 	introShipping:
-		'Caso queiram enviar direto ao endereço: Travessa Teodoro Sampaio, Nº ' +
-		'37, Vale das Pedrinhas, Salvador - BA, 41925-790. Não esqueca de nos ' +
-		'comunicar ao comprar!',
+		'Caso queiram enviar direto ao endereço: XYZ, N 999, Bairro null, cidade: undefined, cep: 00000-000. - BA',
 
 	heroImage,
 
@@ -36,6 +36,6 @@ export const DEFAULT_APP_PAGE_CONTENT = {
 		nameFieldLabel: 'Seu Nome',
 		signButton: 'Assinar',
 		signedByPrefix: 'Assinado por:',
-		nameRequiredAlert: 'É necessário digitar um nome antes de assinar!',
+		nameRequiredAlert: NAME_REQUIRED_ALERT,
 	},
 };

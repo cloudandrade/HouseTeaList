@@ -1,14 +1,13 @@
-import { DEFAULT_APP_PAGE_CONTENT } from './defaultContent';
+import { DEMO_LANDING_PAGE_CONTENT } from './defaultContent';
 import { APP_THEME } from './theme';
 
 /**
- * Referência estática (defaults + tema). A app principal usa `useAppContent()` para
- * conteúdo possivelmente sobrescrito pela API (`GET /app-settings`).
+ * Referência estática da demo da home (`/`) + tema.
+ * Páginas de evento usam `useAppContent()` (API); não misturar com esta demo.
  */
 export const APP_CONTENT = {
-	...DEFAULT_APP_PAGE_CONTENT,
+	...DEMO_LANDING_PAGE_CONTENT,
 	theme: APP_THEME,
 };
 
-export { DEFAULT_APP_PAGE_CONTENT };
-export { APP_THEME };
+export { DEMO_LANDING_PAGE_CONTENT };

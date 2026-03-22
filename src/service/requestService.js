@@ -1,9 +1,5 @@
 import axios from 'axios';
 
-/**
- * - Se `NEXT_PUBLIC_API_URL` estiver definida (ex. `http://localhost:3000`), usa diretamente.
- * - Se estiver vazia / omitida, usa `/api` (rotas API do Next na mesma origem).
- */
 function resolveApiBase() {
 	const raw =
 		typeof process !== 'undefined' && process.env
@@ -21,11 +17,16 @@ const api = axios.create({
 
 export default api;
 
-export function getAll() {
-	return api.get('/itens');
+function tenantBase(slug) {
+	const s = encodeURIComponent(String(slug || '').trim());
+	return `/t/${s}`;
 }
 
-export function updateItem(obj) {
+export function getAll(slug) {
+	return api.get(`${tenantBase(slug)}/itens`);
+}
+
+export function updateItem(slug, obj) {
 	const id = obj._id;
 	const body = {
 		id: obj.id,
@@ -33,33 +34,38 @@ export function updateItem(obj) {
 		checked: obj.checked,
 	};
 
-	return api.put(`/itens/${id}`, body);
+	return api.put(`${tenantBase(slug)}/itens/${id}`, body);
 }
 
-export function getAppSettings() {
-	return api.get('/app-settings');
+export function getAppSettings(slug) {
+	return api.get(`${tenantBase(slug)}/app-settings`);
 }
 
-export function verifyConfigKey(key) {
-	return api.post('/admin/verify-config-key', { key });
+export function verifyConfigKey(slug, key) {
+	return api.post(`${tenantBase(slug)}/admin/verify-config-key`, { key });
 }
 
-export function putAppSettings(configKey, payload) {
-	return api.put('/admin/app-settings', payload, {
+/** Desbloqueia /config: valida chave existente ou provisiona tenant a partir de access_invites. */
+export function unlockConfig(key) {
+	return api.post('/config/unlock', { key });
+}
+
+export function putAppSettings(slug, configKey, payload) {
+	return api.put(`${tenantBase(slug)}/admin/app-settings`, payload, {
 		headers: { 'x-config-key': configKey },
 	});
 }
 
-export function adminAddItem(configKey, itemLabel) {
+export function adminAddItem(slug, configKey, itemLabel) {
 	return api.post(
-		'/admin/itens',
+		`${tenantBase(slug)}/admin/itens`,
 		{ item: itemLabel },
 		{ headers: { 'x-config-key': configKey } }
 	);
 }
 
-export function adminDeleteItem(configKey, mongoId) {
-	return api.delete(`/admin/itens/${mongoId}`, {
+export function adminDeleteItem(slug, configKey, mongoId) {
+	return api.delete(`${tenantBase(slug)}/admin/itens/${mongoId}`, {
 		headers: { 'x-config-key': configKey },
 	});
 }
