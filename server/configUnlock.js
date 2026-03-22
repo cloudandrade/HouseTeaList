@@ -83,8 +83,6 @@ async function handlePostConfigUnlock(req, res) {
 			label: invite.label || '',
 		});
 
-		await AccessInvite.deleteOne({ _id: invite._id });
-
 		return res.json({
 			slug: created.slug,
 			label: created.label || '',

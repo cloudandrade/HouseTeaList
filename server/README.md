@@ -19,7 +19,7 @@ Copie `.env.example` para `.env` e ajuste.
 - `POST /admin/verify-config-key` — corpo `{ "key": "..." }`; valida contra a **chave do evento** (hash na BD).
 - `PUT /admin/app-settings`, `POST /admin/itens`, `DELETE /admin/itens/:id` — cabeçalho `x-config-key` com a mesma chave do tenant.
 
-Criação de eventos: convites em `access_invites` + primeiro acesso em **`POST /api/config/unlock`** (não há mais `CONFIG_ADMIN_KEY` nem rotas `/api/sys/*`).
+Criação de eventos: convites em `access_invites` (não são apagados após provisionar) + primeiro acesso em **`POST /api/config/unlock`** (não há mais `CONFIG_ADMIN_KEY` nem rotas `/api/sys/*`).
 
 ## MongoDB local com Docker
 

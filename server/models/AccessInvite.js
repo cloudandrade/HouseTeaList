@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 /**
- * Chaves pré-cadastradas pelo admin. Ao primeiro desbloqueio em /config,
- * cria-se o tenant e este documento é removido.
+ * Chaves pré-cadastradas pelo admin. No primeiro desbloqueio em /config
+ * cria-se o tenant; o documento permanece na coleção (histórico / auditoria).
+ * A partir daí a mesma chave autentica via `tenants.keyLookup`.
  */
 const accessInviteSchema = new Schema(
 	{

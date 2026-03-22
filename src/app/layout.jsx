@@ -29,7 +29,19 @@ export default function RootLayout({ children }) {
 							flexDirection: 'column',
 						}}
 					>
-						<div style={{ flex: 1 }}>{children}</div>
+						<main
+							style={{
+								flexGrow: 1,
+								flexShrink: 0,
+								flexBasis: 'auto',
+								width: '100%',
+								minHeight: 0,
+								display: 'flex',
+								flexDirection: 'column',
+							}}
+						>
+							{children}
+						</main>
 						<SiteFooter />
 					</div>
 				</NavigationLoadingProvider>

@@ -89,10 +89,11 @@ export default function ConfigPage() {
 		return (
 			<Box
 				style={{
-					minHeight: '100vh',
+					flex: 1,
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
+					minHeight: 0,
 				}}
 			>
 				<CircularProgress />
@@ -104,9 +105,12 @@ export default function ConfigPage() {
 		return (
 			<Box
 				style={{
-					minHeight: '100vh',
+					flex: 1,
+					width: '100%',
+					boxSizing: 'border-box',
 					padding: 24,
 					backgroundColor: '#fafafa',
+					minHeight: 0,
 				}}
 			>
 				<Box style={{ maxWidth: 480, margin: '0 auto' }}>

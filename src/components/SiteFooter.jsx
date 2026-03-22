@@ -9,7 +9,7 @@ export default function SiteFooter() {
 		<Box
 			component="footer"
 			style={{
-				marginTop: 'auto',
+				flexShrink: 0,
 				padding: '20px 16px 24px',
 				textAlign: 'center',
 				borderTop: '1px solid rgba(0, 0, 0, 0.08)',
