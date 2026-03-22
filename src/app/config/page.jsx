@@ -14,6 +14,7 @@ import {
 	ConfigAdminPanel,
 	CONFIG_SESSION_STORAGE_KEY,
 } from '../../components/ConfigAdminPanel';
+import AppLink from '../../components/AppLink';
 import { unlockConfig } from '../../service/requestService';
 
 export default function ConfigPage() {
@@ -195,9 +196,9 @@ export default function ConfigPage() {
 					</Typography>
 					<Typography variant="body2" style={{ marginTop: 8 }}>
 						Configuração (esta tela):{' '}
-						<a href={`${origin}${unlockMeta?.configUrl || '/config'}`}>
+						<AppLink href={`${origin}${unlockMeta?.configUrl || '/config'}`}>
 							{`${origin}${unlockMeta?.configUrl || '/config'}`}
-						</a>
+						</AppLink>
 					</Typography>
 				</Paper>
 			</Box>

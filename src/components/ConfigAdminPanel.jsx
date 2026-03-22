@@ -26,6 +26,8 @@ import {
 	getThemeSelectOptionLabel,
 } from '../config/themePalettes';
 import { useAppContent } from '../context/AppContentContext';
+import { useAppDialog } from '../context/AppDialogContext';
+import { useAppNavigate } from '../context/NavigationLoadingContext';
 import {
 	getAll,
 	getAppSettings,
@@ -53,6 +55,8 @@ function readAccessKey() {
 
 export function ConfigAdminPanel({ onLogout }) {
 	const { content, slug } = useAppContent();
+	const { showConfirm } = useAppDialog();
+	const navigateTo = useAppNavigate();
 	const t = content.theme;
 
 	const [keyError, setKeyError] = useState('');
@@ -67,8 +71,8 @@ export function ConfigAdminPanel({ onLogout }) {
 	const [saveMsg, setSaveMsg] = useState('');
 
 	const goToPublicPage = () => {
-		if (slug) window.location.assign(`/${slug}`);
-		else window.location.assign('/');
+		if (slug) navigateTo(`/${slug}`);
+		else navigateTo('/');
 	};
 
 	const loadPanelData = useCallback(async () => {
@@ -247,6 +251,17 @@ export function ConfigAdminPanel({ onLogout }) {
 		}
 	};
 
+	const requestRemoveItem = async (mongoId) => {
+		const ok = await showConfirm({
+			title: 'Remover presente',
+			message:
+				'Tens a certeza de que queres remover este item da lista? Esta ação não pode ser desfeita aqui.',
+			confirmLabel: 'Remover',
+			cancelLabel: 'Cancelar',
+		});
+		if (ok) await handleRemoveItem(mongoId);
+	};
+
 	return (
 		<Box
 			style={{
@@ -296,19 +311,6 @@ export function ConfigAdminPanel({ onLogout }) {
 										Textos da página
 									</Typography>
 									<form onSubmit={handleSaveSettings}>
-										<TextField
-											fullWidth
-											label="Título do separador (document.title)"
-											value={form.documentTitle}
-											onChange={(e) =>
-												updateField(
-													'documentTitle',
-													e.target.value
-												)
-											}
-											margin="dense"
-											variant="outlined"
-										/>
 										<TextField
 											fullWidth
 											label="Título principal (hero)"
@@ -605,7 +607,7 @@ export function ConfigAdminPanel({ onLogout }) {
 													edge="end"
 													size="small"
 													onClick={() =>
-														handleRemoveItem(row._id)
+														requestRemoveItem(row._id)
 													}
 													aria-label="remover"
 												>

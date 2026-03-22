@@ -23,7 +23,7 @@ As cores são aplicadas em `src/config/appContent.js` via **`APP_CONTENT.theme`*
 
 ### Painel de configuração (`/config`)
 
-Rota **`/config`** no Vite: permite alterar textos da página, **tema (paleta 1–30)**, imagem (base64 na base de dados) e itens da lista, mediante **`CONFIG_ADMIN_KEY`** no `server/.env`. A página pública lê **`GET /app-settings`** e usa os defaults em `src/config/defaultContent.js` quando não há overrides no MongoDB. O tema guardado na BD tem prioridade sobre **`VITE_THEME_VARIATION`** no `.env` (este último serve de fallback até existir `themeVariation` no documento ou se a API falhar).
+A rota **`/config`** usa a **chave de acesso do evento** (convite em `access_invites` ou chave já associada ao tenant). Permite alterar textos, **tema (paleta 1–30)**, imagem e itens. A página pública lê **`GET /app-settings`**. O tema na BD tem prioridade sobre o fallback **`NEXT_PUBLIC_THEME_VARIATION`** no `.env`.
 
 ## Rodar API + React
 

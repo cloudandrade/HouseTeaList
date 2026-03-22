@@ -13,11 +13,12 @@ import {
 	makeStyles,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { NAME_REQUIRED_ALERT } from '../config/systemMessages';
+import {
+	DEMO_ONLY_MESSAGE,
+	NAME_REQUIRED_ALERT,
+} from '../config/systemMessages';
+import { useAppDialog } from '../context/AppDialogContext';
 import './Accordion/styles.css';
-
-const DEMO_ONLY_MESSAGE =
-	'Exemplo apenas na página inicial. Para uma lista real, usa o teu link de evento ou cria a tua página em /config.';
 
 const DEMO_SIGNED_NAME = 'xpto';
 
@@ -42,6 +43,7 @@ const useTextFieldStyles = makeStyles((theme) => ({
  */
 export default function DemoStaticGiftList({ items, content }) {
 	const { theme } = content;
+	const { showAlert } = useAppDialog();
 	const textFieldClasses = useTextFieldStyles();
 	const list = Array.isArray(items) ? items : [];
 	const [namesById, setNamesById] = useState({});
@@ -53,10 +55,17 @@ export default function DemoStaticGiftList({ items, content }) {
 	const handleDemoAssinar = (item) => {
 		const nome = String(namesById[item.id] ?? '').trim();
 		if (nome.length <= 2) {
-			window.alert(NAME_REQUIRED_ALERT);
+			void showAlert({
+				title: 'Nome obrigatório',
+				message: NAME_REQUIRED_ALERT,
+			});
 			return;
 		}
-		window.alert(DEMO_ONLY_MESSAGE);
+		void showAlert({
+			title: 'Demonstração',
+			message: DEMO_ONLY_MESSAGE,
+			confirmLabel: 'Entendi',
+		});
 	};
 
 	return (

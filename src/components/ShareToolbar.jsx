@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useNavigationLoading } from '../context/NavigationLoadingContext';
 import {
 	IconButton,
 	Menu,
@@ -12,6 +14,7 @@ import {
 } from '@material-ui/core';
 import ShareIcon from '@material-ui/icons/Share';
 import LinkIcon from '@material-ui/icons/Link';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 function WhatsAppSvgIcon(props) {
 	return (
@@ -55,6 +58,7 @@ async function copyToClipboard(text) {
  * (O Instagram não tem URL de partilha web; copiamos o link e abrimos o site da app.)
  */
 export default function ShareToolbar({ theme, shareTitle }) {
+	const { startNavigation } = useNavigationLoading();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [pageUrl, setPageUrl] = useState('');
 	const [copiedOpen, setCopiedOpen] = useState(false);
@@ -138,13 +142,20 @@ export default function ShareToolbar({ theme, shareTitle }) {
 		typeof navigator !== 'undefined' &&
 		typeof navigator.share === 'function';
 
+	const floatingButtonStyle = {
+		pointerEvents: 'auto',
+		color: theme.primary,
+		backgroundColor: 'rgba(255,255,255,0.75)',
+		boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+	};
+
 	return (
 		<>
 			<div
 				style={{
 					width: '100%',
 					display: 'flex',
-					justifyContent: 'flex-end',
+					justifyContent: 'space-between',
 					alignItems: 'center',
 					padding: '4px 8px 0',
 					boxSizing: 'border-box',
@@ -152,15 +163,20 @@ export default function ShareToolbar({ theme, shareTitle }) {
 				}}
 			>
 				<IconButton
+					component={Link}
+					href="/config"
+					onClick={() => startNavigation()}
+					aria-label="Ir para configuração"
+					size="small"
+					style={floatingButtonStyle}
+				>
+					<SettingsIcon fontSize="small" />
+				</IconButton>
+				<IconButton
 					aria-label="Partilhar esta página"
 					size="small"
 					onClick={(e) => setAnchorEl(e.currentTarget)}
-					style={{
-						pointerEvents: 'auto',
-						color: theme.primary,
-						backgroundColor: 'rgba(255,255,255,0.75)',
-						boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
-					}}
+					style={floatingButtonStyle}
 				>
 					<ShareIcon fontSize="small" />
 				</IconButton>

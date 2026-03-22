@@ -1,5 +1,6 @@
 import './globals.css';
 import SiteFooter from '../components/SiteFooter';
+import { NavigationLoadingProvider } from '../context/NavigationLoadingContext';
 
 export const metadata = {
 	title: 'Lista de Chá',
@@ -20,16 +21,18 @@ export default function RootLayout({ children }) {
 		<html lang="pt">
 			<body>
 				<noscript>É necessário JavaScript para executar esta aplicação.</noscript>
-				<div
-					style={{
-						minHeight: '100vh',
-						display: 'flex',
-						flexDirection: 'column',
-					}}
-				>
-					<div style={{ flex: 1 }}>{children}</div>
-					<SiteFooter />
-				</div>
+				<NavigationLoadingProvider>
+					<div
+						style={{
+							minHeight: '100vh',
+							display: 'flex',
+							flexDirection: 'column',
+						}}
+					>
+						<div style={{ flex: 1 }}>{children}</div>
+						<SiteFooter />
+					</div>
+				</NavigationLoadingProvider>
 			</body>
 		</html>
 	);

@@ -17,6 +17,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { getAll, updateItem } from '../../service/requestService';
 import { useAppContent } from '../../context/AppContentContext';
+import { useAppDialog } from '../../context/AppDialogContext';
 import { NAME_REQUIRED_ALERT } from '../../config/systemMessages';
 
 const useTextFieldStyles = makeStyles((theme) => ({
@@ -50,6 +51,7 @@ export default function SimpleAccordion() {
 	const classes = useStyles();
 	const textFieldClasses = useTextFieldStyles();
 	const { content, slug } = useAppContent();
+	const { showAlert } = useAppDialog();
 	const { theme } = content;
 	const [lista, setLista] = useState([]);
 	const [namesById, setNamesById] = useState({});
@@ -97,7 +99,10 @@ export default function SimpleAccordion() {
 					console.error(error);
 				});
 		} else {
-			alert(NAME_REQUIRED_ALERT);
+			void showAlert({
+				title: 'Nome obrigatório',
+				message: NAME_REQUIRED_ALERT,
+			});
 		}
 	}
 
