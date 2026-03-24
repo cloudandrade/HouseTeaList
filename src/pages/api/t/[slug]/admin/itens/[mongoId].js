@@ -11,9 +11,9 @@ export default async function handler(req, res) {
 		res.setHeader('Allow', ['DELETE']);
 		return res.status(405).end(`Method ${req.method} Not Allowed`);
 	}
-	return requireTenantAccessKey(req, res, () => {
-		void handleDeleteAdminItem(req, res);
-	});
+	return requireTenantAccessKey(req, res, () =>
+		handleDeleteAdminItem(req, res)
+	);
 }
 
 export const config = {

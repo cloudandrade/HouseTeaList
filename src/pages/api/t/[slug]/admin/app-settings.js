@@ -11,12 +11,9 @@ export default async function handler(req, res) {
 		res.setHeader('Allow', ['PUT']);
 		return res.status(405).end(`Method ${req.method} Not Allowed`);
 	}
-	return new Promise((resolve) => {
-		res.once('finish', resolve);
-		requireTenantAccessKey(req, res, () => {
-			handlePutAdminAppSettings(req, res);
-		});
-	});
+	return requireTenantAccessKey(req, res, () =>
+		handlePutAdminAppSettings(req, res)
+	);
 }
 
 export const config = {

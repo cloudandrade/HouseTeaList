@@ -5,10 +5,14 @@ import {
 	Box,
 	Button,
 	CircularProgress,
+	IconButton,
+	InputAdornment,
 	Paper,
 	TextField,
 	Typography,
 } from '@material-ui/core';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { Providers } from '../providers';
 import {
 	ConfigAdminPanel,
@@ -20,6 +24,7 @@ import { unlockConfig } from '../../service/requestService';
 export default function ConfigPage() {
 	const [phase, setPhase] = useState('checking');
 	const [keyInput, setKeyInput] = useState('');
+	const [showKey, setShowKey] = useState(false);
 	const [keyError, setKeyError] = useState('');
 	const [busy, setBusy] = useState(false);
 	const [slug, setSlug] = useState(null);
@@ -82,6 +87,7 @@ export default function ConfigPage() {
 		setSlug(null);
 		setUnlockMeta(null);
 		setKeyInput('');
+		setShowKey(false);
 		setPhase('key');
 	}, []);
 
@@ -125,13 +131,30 @@ export default function ConfigPage() {
 						<form onSubmit={handleUnlock}>
 							<TextField
 								fullWidth
-								type="password"
+								type={showKey ? 'text' : 'password'}
 								label="Chave de autorização"
 								value={keyInput}
 								onChange={(e) => setKeyInput(e.target.value)}
 								variant="outlined"
 								margin="normal"
 								autoComplete="off"
+								InputProps={{
+									endAdornment: (
+										<InputAdornment position="end">
+											<IconButton
+												aria-label={
+													showKey
+														? 'Esconder chave de acesso'
+														: 'Mostrar chave de acesso'
+												}
+												edge="end"
+												onClick={() => setShowKey((v) => !v)}
+											>
+												{showKey ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
+										</InputAdornment>
+									),
+								}}
 							/>
 							{keyError && (
 								<Typography color="error" variant="body2" style={{ marginTop: 8 }}>
